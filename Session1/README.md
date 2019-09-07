@@ -1,5 +1,5 @@
-# EVA-Track3-Poject1
-This repository contains assignment files of TSAI-EVA-Track3 course's session1
+# EVA-Track3-Session1
+This repository contains assignment files of TSAI-EVA-Track3 course's session1.
 
 
 ## Files
