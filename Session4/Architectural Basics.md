@@ -22,10 +22,7 @@
 ## **4. Kernels and how do we decide the number of kernels?**
 
 > Kernels are basically feature extractors. When kernels are convolved with input channel, they extract features (eg. edges, circles....) into output channel. 
-> Number of kernel depends on
-1. Variety of features(expressivity) that may be required for given dataset eg. MNIST requires lesser kernels compared to say CIFAR
-2. More number of kernels may be require to achieve better inter and class variation.
-3. Number also depends on the hardware capacity.
+> Number of kernel depends on  (1). Variety of features(expressivity) that may be required for given dataset eg. MNIST requires lesser kernels compared to say CIFAR. (2). More number of kernels may be require to achieve better inter and class variation. (3). Number also depends on the hardware capacity.
 
 
 ## **5. MaxPooling**
