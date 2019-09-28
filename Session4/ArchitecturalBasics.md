@@ -93,7 +93,7 @@
 
 > In a network there may be some features in range 0-1 and others in 0-1000 in this case when back propogation is operating it may not be that effective as correction based on small range features may be too low for large range features similarly corrections based on large range features may be too large for small range features. Batch normalization normalizes features. Thus learning will be improved. Additionally batch normalization introduces some noise hence helps with overfitting as well.
 
-> Batch normalization can be used before or after convolution layer.
+> Batch normalization can be used before or after ReLU.
 
 
 ## **20. The distance of Batch Normalization from Prediction**
