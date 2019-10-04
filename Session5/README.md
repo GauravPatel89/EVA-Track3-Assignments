@@ -11,6 +11,6 @@ This is a google colab file containing codes for MNIST training with following t
 3. L2 Norm regularization
 4. Best model saving 
 
-The google colab file link is https://colab.research.google.com/drive/1qtshfvPd-lcKDYKszfCSBZgBymJLgEpP 
+The google colab file link is https://colab.research.google.com/drive/1AQvrTwPaLfFWjzqFhERY2UgbFFP4-puL 
 
  
