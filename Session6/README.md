@@ -12,3 +12,5 @@ This repository contains assignment files of TSAI-EVA-Track3 course's session6.
 **Assignment6B.ipynb**
 
 -- This file contains a cnn model defined using keras functional api. The model incorporates variety of convolutions like normal convolution, Spatially separable convolution, depthwise separable convolution, group convolution etc. It achieves test accuracy of 39.74% with 648,490 model parameters. The Google colab file link is https://colab.research.google.com/drive/1IQXNI75uGkqvqKTz7ljcyVeIkZlmHlad
+
+
