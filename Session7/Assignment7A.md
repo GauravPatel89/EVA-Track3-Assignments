@@ -1,4 +1,10 @@
-## Receptive Field calcuations for GoogLeNet network
+## Receptive Field calculations for GoogLeNet network
+
+Following is the calculation for Receptive field of GoogLeNet model explained in https://arxiv.org/pdf/1409.4842.pdf. 
+Considering that in academics networks start processing from size of 56x56 with preceding block common. We are also considering the network from the layer at which it start processing 56x56 image. We arrive at Receptive field of 225x225.
+
+----
+**Glossary**
 
 j = jump
 
@@ -14,6 +20,9 @@ r<sub>Out</sub> = Receptive field Out
 
 r<sub>In</sub> = Receptive field In
 
+----
+**Equations**
+
 **n<sub>Out</sub> = Floor((n<sub>In</sub> + 2p - k)/s) + 1**
 
 **j<sub>Out</sub> = j<sub>In</sub> x s**
@@ -21,9 +30,11 @@ r<sub>In</sub> = Receptive field In
 **r<sub>Out</sub> = r<sub>In</sub> + (k-1) x j<sub>In</sub>**
 
 -----
-**Layer1**
+**Layer1: Conv 3x3 + 1(S)**
 
-k,p,s = 3,2,1
+k,p,s = 3,1,1
+
+n<sub>In</sub> = 56
 
 r<sub>In</sub> = 1
 
@@ -33,11 +44,12 @@ j<sub>Out</sub> = 1 x 1 = 1
 
 r<sub>Out</sub> = 1 + (3-1) x 1 = 3
 
+n<sub>Out</sub> = Floor((56+2x1-3)/1)+1 = 56
 
 -----
-**Layer2**
+**Layer2: MaxPool 3x3 + 2(S)**
 
-k,p,s = 3,1,2
+k,p,s = 3,0,2
 
 r<sub>In</sub> = 3
 
@@ -49,7 +61,7 @@ r<sub>Out</sub> = 3 + (3-1) x 1 = 5
 
 
 -----
-**Layer3**
+**Layer3: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -63,7 +75,7 @@ r<sub>Out</sub> = 5 + (5-1) x 2 = 13
 
 
 -----
-**Layer4**
+**Layer4: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -76,9 +88,9 @@ j<sub>Out</sub> = 2 * 1 = 2
 r<sub>Out</sub> = 13 + (5-1) x 2 = 21
 
 -----
-**Layer5**
+**Layer5: MaxPool 3x3 + 2(S)**
 
-k,p,s = 3,1,2
+k,p,s = 3,0,2
 
 r<sub>In</sub> = 21
 
@@ -89,7 +101,7 @@ j<sub>Out</sub> = 2 x 2 = 4
 r<sub>Out</sub> = 21 + (3-1) x 2 = 25
 
 -----
-**Layer6**
+**Layer6: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -102,7 +114,7 @@ j<sub>Out</sub> = 4 * 1 = 4
 r<sub>Out</sub> = 25 + (5-1) x 4 = 41
 
 -----
-**Layer7**
+**Layer7: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -115,7 +127,7 @@ j<sub>Out</sub> = 4 * 1 = 4
 r<sub>Out</sub> = 41 + (5-1) x 4 = 57
 
 -----
-**Layer8**
+**Layer8: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -128,7 +140,7 @@ j<sub>Out</sub> = 4 * 1 = 4
 r<sub>Out</sub> = 57 + (5-1) x 4 = 73
 
 -----
-**Layer9**
+**Layer9: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -141,7 +153,7 @@ j<sub>Out</sub> = 4 * 1 = 4
 r<sub>Out</sub> = 73 + (5-1) x 4 = 89
 
 -----
-**Layer10**
+**Layer10: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -154,9 +166,9 @@ j<sub>Out</sub> = 4 * 1 = 4
 r<sub>Out</sub> = 89 + (5-1) x 4 = 105
 
 -----
-**Layer11**
+**Layer11: MaxPool 3x3 + 2(S)**
 
-k,p,s = 3,1,2
+k,p,s = 3,0,2
 
 r<sub>In</sub> = 105
 
@@ -167,7 +179,7 @@ j<sub>Out</sub> = 4 x 2 = 8
 r<sub>Out</sub> = 105 + (3-1) x 4 = 113
 
 -----
-**Layer12**
+**Layer12: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -180,7 +192,7 @@ j<sub>Out</sub> = 8 * 1 = 8
 r<sub>Out</sub> = 113 + (5-1) x 8 = 145
 
 -----
-**Layer13**
+**Layer13: Inception Block: Conv 5x5 + 1(S)**
 
 k,p,s = 5,4,1
 
@@ -193,7 +205,7 @@ j<sub>Out</sub> = 8 * 1 = 8
 r<sub>Out</sub> = 145 + (5-1) x 8 = 177
 
 -----
-**Layer14**
+**Layer14: Conv 7x7 + 1(S)**
 
 k,p,s = 7,0,1
 
@@ -204,3 +216,7 @@ j<sub>In</sub> = 8
 j<sub>Out</sub> = 8 * 1 = 8
 
 r<sub>Out</sub> = 177 + (7-1) x 8 = 225
+
+----
+**Final Receptive Field = 225x225**
+
