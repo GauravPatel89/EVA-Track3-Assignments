@@ -3,7 +3,7 @@ This repository contains assignment files of TSAI-EVA-Track3 course's session7.
 
 
 ## Assignment 7B: 
-**Assignment7B.ipynb**
+**Session7B.ipynb**
 -- This is a google colab file containing implementation of ENAS model for CIFAR-10 dataset.
   The google colab file link is 
   
