@@ -1,4 +1,15 @@
-## Receptive Field calculations for GoogLeNet network
+# EVA-Track3-Session7
+This repository contains assignment files of TSAI-EVA-Track3 course's session7.
+
+
+## Assignment 7B: 
+**Assignment7B.ipynb**
+-- This is a google colab file containing implementation of ENAS model for CIFAR-10 dataset.
+  The google colab file link is 
+  
+
+## Assignment 7A: 
+### Receptive Field calculations for GoogLeNet network
 
 Following is the calculation for Receptive field of GoogLeNet model explained in https://arxiv.org/pdf/1409.4842.pdf. 
 Considering that in academics networks start processing from size of 56x56 with preceding block common. We are also considering the network from the layer at which it start processing 56x56 image. We arrive at Receptive field of 225x225.
