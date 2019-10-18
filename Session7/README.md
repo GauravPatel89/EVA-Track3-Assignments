@@ -30,8 +30,6 @@ r<sub>In</sub> = Receptive field In
 ----
 **Equations**
 
-**n<sub>Out</sub> = Floor((n<sub>In</sub> + 2p - k)/s) + 1**
-
 **j<sub>Out</sub> = j<sub>In</sub> x s**
 
 **r<sub>Out</sub> = r<sub>In</sub> + (k-1) x j<sub>In</sub>**
@@ -50,8 +48,6 @@ j<sub>In</sub> = 1
 j<sub>Out</sub> = 1 x 1 = 1
 
 r<sub>Out</sub> = 1 + (3-1) x 1 = 3
-
-n<sub>Out</sub> = Floor((56+2x1-3)/1)+1 = 56
 
 -----
 **Layer2: MaxPool 3x3 + 2(S)**
