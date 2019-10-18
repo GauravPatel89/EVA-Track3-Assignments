@@ -12,10 +12,6 @@ s = stride
 
 k = kernel size
 
-n<sub>Out</sub> = output size
-
-n<sub>In</sub> = Input size
-
 r<sub>Out</sub> = Receptive field Out
 
 r<sub>In</sub> = Receptive field In
