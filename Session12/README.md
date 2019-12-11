@@ -35,7 +35,7 @@ Code segments are described below.
          bound = 1 / math.sqrt(fan)
          return tf.random.uniform(shape, minval=-bound, maxval=bound, dtype=dtype)
          
-4 Define a class for basic Conv2D layer followed BatchNormalization and ReLU activation. We will be using instances of this class in our model definition.         
+4 Define a class for basic Conv2D layer followed BatchNormalization and ReLU activation.  This class has been inherited from "tf.keras.Model" class thus it inherits training and inference functionalities. Instances of this class can be used as parts or building blocks of our DNN model. The class groups number of layers into a single class object. These layers are defined in __\_\_init\_\_()__  and how these layers are connected i.e. model forward pass is defined in  __call()__ 
 
     class ConvBN(tf.keras.Model):
       def __init__(self, c_out):
