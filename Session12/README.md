@@ -28,14 +28,19 @@ Code segments are described below.
     WEIGHT_DECAY = 5e-4 #@param {type:"number"}
     EPOCHS = 24 #@param {type:"integer"}
     
-3 Define a function to initialize layer weights. This function has been defined here because DavidNet model uses PyTorch but the way PyTorch intializes model layer weights has no equivalent in tensorflow.
+4.Define a function to initialize layer weights. This function has been defined here because DavidNet model uses PyTorch but the way PyTorch intializes model layer weights has no equivalent in tensorflow.
 
     def init_pytorch(shape, dtype=tf.float32, partition_info=None):
          fan = np.prod(shape[:-1])
          bound = 1 / math.sqrt(fan)
          return tf.random.uniform(shape, minval=-bound, maxval=bound, dtype=dtype)
          
-4 Define a class for basic Conv2D layer followed BatchNormalization and ReLU activation.  This class has been inherited from "tf.keras.Model" class thus it inherits training and inference functionalities. Instances of this class can be used as parts or building blocks of our DNN model. The class groups number of layers into a single class object. These layers are defined in __\_\_init\_\_()__  and how these layers are connected i.e. model forward pass is defined in  __call()__ 
+5. Define a class for basic Conv2D layer followed BatchNormalization,DropOut and ReLU activation.  This class has been inherited from "tf.keras.Model" class thus it inherits training and inference functionalities. Instances of this class can be used as parts or building blocks of our DNN model. 
+
+The class groups number of layers into a single class object. These layers are defined in __\_\_init\_\_()__  and how these layers are connected i.e. model forward pass is defined in  __call()__. Output of basic Conv2D layer is passed to Dropout which is in turn passed to Batchnormalization followed by ReLU activation.
+
+Number of kernels are passed as parameter _c_out_. Padding is set as _SAME_ so input and output channel size remains same. 
+kernels are initialized using previously defined _init_pytorch()_ function. 
 
     class ConvBN(tf.keras.Model):
       def __init__(self, c_out):
@@ -47,7 +52,9 @@ Code segments are described below.
       def call(self, inputs):
         return tf.nn.relu(self.bn(self.drop(self.conv(inputs))))
         
-5
+6. Define a class for custom ResNET block. Just like __ConvBN__  various components of ResNet, like basic Conv block, pooling layer and residual connection are defined in __\_\_init\_\_()__ and how these layers are connected together is defined in __call()__. Output of Basic ConvBN block is passed to pooling layer and if residual connection is required connection consisting of two ConvBN blocks is added. 
+
+Number of kernels are passed as parameter _c_out_. Pooling layer to be used is passed as _pool_ parameter. _res_ parameter defines wheather residual connection is required.
 
     class ResBlk(tf.keras.Model):
       def __init__(self, c_out, pool, res = False):
@@ -65,7 +72,21 @@ Code segments are described below.
           h = h + self.res2(self.res1(h))
         return h
 
-6
+6 Define the full model. Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
+
+<img src="https://github.com/davidcpage/cifar10-fast/blob/d31ad8d393dd75147b65f261dbf78670a97e48a8/net.svg">
+
+It has initial ConvBN block with 64 kernels. Followed by a ResNet block with residual connection with 128 kernels, then ResNet block with 256 kernels and no residual connection. This is followed by ResNet block with 512 kernels and residual connection. After this we have globalmMaxPooling layer. Output of GlobalMaxPooling is then passed to a Dense layer to get 10x1x1 output. These outputs are scaled by 0.125 and passed to a softmax layer to get the final output. 
+
+In the code we scale the output of dense layer by 0.125 as
+
+"h = self.linear(h) * self.weight"
+
+this is a hyperparameter which is manually tuned to 0.125 by DavidNet. Explanation given by David is 
+
+"_By default in PyTorch (0.4), initial batch norm scales are chosen uniformly at random from the interval [0,1]. Channels which are initialised near zero could be wasted so we replace this with a constant initialisation at 1. This leads to a larger signal through the network and to compensate we introduce an overall constant multiplicative rescaling of the final classifier. A rough manual optimisation of this extra hyperparameter suggest that 0.125 is a reasonable value. (The low value makes predictions less certain and appears to ease optimisation.)_" 
+
+So basically batch normalization leads to slightly larger signal at the output. It is scaled down using hyperparameter weight factor. This parameter is manually tuned to 0.125 in this case.
 
     class DavidNet(tf.keras.Model):
       def __init__(self, c=64, weight=0.125):
@@ -81,7 +102,7 @@ Code segments are described below.
 
       def call(self, x, y):
         h = self.pool(self.blk3(self.blk2(self.blk1(self.init_conv_bn(x)))))
-        ** h = self.linear(h) * self.weight
+        h = self.linear(h) * self.weight
         ce = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=h, labels=y)
         loss = tf.reduce_sum(ce)
         correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))
