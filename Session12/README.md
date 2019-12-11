@@ -1,31 +1,41 @@
-https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1
- 
-1
+# 94% Accuracy on CIFAR10 using One Cycle training policy
 
-    import numpy as np
-    import time, math
-    from tqdm import tqdm_notebook as tqdm
-    import tensorflow as tf
-    import tensorflow.contrib.eager as tfe
+Cifar10 is a classic dataset in the field of deep learning. It has 60000 colour images of size 32×32 images belonging to 10 different classes (6000 images/class). Training Cifar10 to accuracy of 94% is quite challenging and doing it in few 100 seconds and in cost effective way is even more challenging. DAWNBench competition (https://dawn.cs.stanford.edu/benchmark/index.html#cifar10) targets this particular aspect. One of the winner model(Nov 2018 - Apr 2019) on DAWNBench, is by David C. Page. It is a custom built 9-Layer ResNet model. It takes just 1 min 15 sec to achieve 94.08% accuracy. Following is an implementation of model used by David C. Page and trained using One cycle training policy.
+
+Complete code can be found at https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1
+Code segments are described below.
+ 
+1.Import necessary modules
+
+
+     import numpy as np
+     import time, math
+     from tqdm import tqdm_notebook as tqdm
+     import tensorflow as tf
+     import tensorflow.contrib.eager as tfe
     
     
-2
+2.Enable tensorflow eagermode. In tensorflow everything is computational graph so if we wanted to debug or check
+  small part of our code, it will not be possible unless entire graph has been defined and we run entire graph. This can be cumbersome process. Enabling tensorflow eagermode allows us to evaluate code segments immediately without building graphs. For more information refer https://www.tensorflow.org/guide/eager
 
     tf.enable_eager_execution()
+    
+3.Use Forms to parameterize the code. Using this we can allow user input for adjusting parameters in our code. We parameterize Batch size, momentum, learning rate, weight decay and number of epochs.
+
     BATCH_SIZE = 512 #@param {type:"integer"}
     MOMENTUM = 0.9 #@param {type:"number"}
     LEARNING_RATE = 0.4 #@param {type:"number"}
     WEIGHT_DECAY = 5e-4 #@param {type:"number"}
     EPOCHS = 24 #@param {type:"integer"}
     
-3 
+3 Define a function to initialize layer weights. This function has been defined here because DavidNet model uses PyTorch but the way PyTorch intializes model layer weights has no equivalent in tensorflow.
 
     def init_pytorch(shape, dtype=tf.float32, partition_info=None):
          fan = np.prod(shape[:-1])
          bound = 1 / math.sqrt(fan)
          return tf.random.uniform(shape, minval=-bound, maxval=bound, dtype=dtype)
          
-4         
+4 Define a class for basic Conv2D layer followed BatchNormalization and ReLU activation. We will be using instances of this class in our model definition.         
 
     class ConvBN(tf.keras.Model):
       def __init__(self, c_out):
@@ -71,7 +81,7 @@ https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scroll
 
       def call(self, x, y):
         h = self.pool(self.blk3(self.blk2(self.blk1(self.init_conv_bn(x)))))
-        h = self.linear(h) * self.weight
+        ** h = self.linear(h) * self.weight
         ce = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=h, labels=y)
         loss = tf.reduce_sum(ce)
         correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))
@@ -98,13 +108,17 @@ https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scroll
     model = DavidNet()
     batches_per_epoch = len_train//BATCH_SIZE + 1
 
-    lr_schedule = lambda t: np.interp([t], [0, (EPOCHS+1)//5, EPOCHS], [0, LEARNING_RATE, 0])[0]
+    ** lr_schedule = lambda t: np.interp([t], [0, (EPOCHS+1)//5, EPOCHS], [0, LEARNING_RATE, 0])[0]
     global_step = tf.train.get_or_create_global_step()
     lr_func = lambda: lr_schedule(global_step/batches_per_epoch)/BATCH_SIZE
-    opt = tf.train.MomentumOptimizer(lr_func, momentum=MOMENTUM, use_nesterov=True)
+    ** opt = tf.train.MomentumOptimizer(lr_func, momentum=MOMENTUM, use_nesterov=True)
     data_aug = lambda x, y: (tf.image.random_flip_left_right(tf.random_crop(x, [32, 32, 3])), y)
 
-9
+9  explain :tensor_slices, prefetch, "for g, v in zip(grads, var):
+          g += v * WEIGHT_DECAY * BATCH_SIZE
+        opt.apply_gradients(zip(grads, var), global_step=global_step)"
+        why:  train_loss += loss.numpy()
+        train_acc += correct.numpy()
 
     t = time.time()
     test_set = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(BATCH_SIZE)
