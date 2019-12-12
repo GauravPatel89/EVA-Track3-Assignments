@@ -223,23 +223,57 @@ Find gradient of loss w.r.t model parameters :
     grads = tape.gradient(loss, var)
     
 Apply weight decay:
+
+Weight decay is defined as follows
+
+
 <img src="weight_decay.png">
+
+To apply this we just add multiplication of weight,weight decay coefficient and BATCH_SIZE to gradients. In the next step when this gradient is actually applied to weight learning rate will be multiplied to weight decay factor along with the gradient.
 
     for g, v in zip(grads, var):
        g += v * WEIGHT_DECAY * BATCH_SIZE
+       
+_zip()_ function here zips together _grads_ and _var_ tensors to generate common dataset. eg. a= [1,3,5] and b= [2,4,6] then zip(a,b) will generate [(1, 2), (3, 4), (5, 6)].
+
     
-we add this to 
-\begin{equation}
-w_i \leftarrow w_i-\eta\frac{\partial E}{\partial w_i}-\eta\lambda w_i.
-\end{equation}
+
+Appy weight update:
+
+    opt.apply_gradients(zip(grads, var), global_step=global_step)
+    
+opt.apply_gradients() applys given _grads_ to _var_ and increments global_step.    
 
 
+Keep track of training loss and accuracy:
+
+    train_loss += loss.numpy()
+    train_acc += correct.numpy()
+
+we accumulate loss and correct prediction values through the entire batch.
 
 
+Calculate test loss and accuracy:
+
+    tf.keras.backend.set_learning_phase(0)
+    for (x, y) in test_set:
+      loss, correct = model(x, y)
+      test_loss += loss.numpy()
+      test_acc += correct.numpy()
+
+Set learning phase to test (_set_learning_phase(0)_). 
+
+Iterate through the test set and for each image perform the model prediction and get loss and total correct prediction values. Accuracy can be found by dividing the total correct prediction by size of test dataset.
 
 
-        why:  train_loss += loss.numpy()
-        train_acc += correct.numpy()
+Print stats:
+
+    print('epoch:', epoch+1, 'lr:', lr_schedule(epoch+1),
+    'train loss:', train_loss / len_train, 'train acc:', train_acc / len_train,
+    'val loss:', test_loss / len_test, 'val acc:', test_acc / len_test, 'time:', time.time() - t)
+    
+    
+Entire code segment is given below
 
     t = time.time()
     test_set = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(BATCH_SIZE)
