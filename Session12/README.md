@@ -72,33 +72,43 @@ Number of kernels are passed as parameter _c_out_. Pooling layer to be used is p
           h = h + self.res2(self.res1(h))
         return h
 
-6 Define the full model. Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
+6. Define the full model. Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
 
 <img src="https://github.com/davidcpage/cifar10-fast/blob/d31ad8d393dd75147b65f261dbf78670a97e48a8/net.svg">
 
 It has initial ConvBN block with 64 kernels. Followed by a ResNet block with residual connection with 128 kernels, then ResNet block with 256 kernels and no residual connection. This is followed by ResNet block with 512 kernels and residual connection. After this we have globalmMaxPooling layer. Output of GlobalMaxPooling is then passed to a Dense layer to get 10x1x1 output. These outputs are scaled by 0.125 and passed to a softmax layer to get the final output. 
 
-In the code we scale the output of dense layer by 0.125 as
+We must pay attention to some of the steps.
 
-"h = self.linear(h) * self.weight"
+* _h = self.linear(h) * self.weight_
 
-this is a hyperparameter which is manually tuned to 0.125 by DavidNet. Explanation given by David is 
+This step applies scaling to the output of dense layer. self.weight is a hyperparameter which is manually tuned to 0.125 by DavidNet. Explanation given by David is 
 
 "_By default in PyTorch (0.4), initial batch norm scales are chosen uniformly at random from the interval [0,1]. Channels which are initialised near zero could be wasted so we replace this with a constant initialisation at 1. This leads to a larger signal through the network and to compensate we introduce an overall constant multiplicative rescaling of the final classifier. A rough manual optimisation of this extra hyperparameter suggest that 0.125 is a reasonable value. (The low value makes predictions less certain and appears to ease optimisation.)_" 
 
 So basically batch normalization leads to slightly larger signal at the output. It is scaled down using hyperparameter weight factor. This parameter is manually tuned to 0.125 in this case.
 
-    class DavidNet(tf.keras.Model):
-      def __init__(self, c=64, weight=0.125):
-        super().__init__()
-        pool = tf.keras.layers.MaxPooling2D()
-        self.init_conv_bn = ConvBN(c)
-        self.blk1 = ResBlk(c*2, pool, res = True)
-        self.blk2 = ResBlk(c*4, pool)
-        self.blk3 = ResBlk(c*8, pool, res = True)
-        self.pool = tf.keras.layers.GlobalMaxPool2D()
-        self.linear = tf.keras.layers.Dense(10, kernel_initializer=init_pytorch, use_bias=False)
-        self.weight = weight
+* _ce = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=h, labels=y)_
+This step calculates softmax cross entropy i.e. softmax classification error between h(model prediction) and y (true labels).
+
+* _loss = tf.reduce_sum(ce)_ 
+This step sums the error cross entropy computed in previous step.
+
+* _correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))_ 
+In this step _tf.argmax()_ gets actual class id from one-hot encoded _h_ vector. then _tf.math.equal()_ compares the predicted and true labels elementwise output of this is in the form of array of True and False values. _tf.cast(*,tf.float32)_ converts the truth values to float32 numbers. Finally _tf.reduce_sum()_ is used to sum the numbers to in effect find total number of true predictions. Function _call()_ returns loss value and total correct predictions.
+
+
+     class DavidNet(tf.keras.Model):
+       def __init__(self, c=64, weight=0.125):
+         super().__init__()
+         pool = tf.keras.layers.MaxPooling2D()
+         self.init_conv_bn = ConvBN(c)
+         self.blk1 = ResBlk(c*2, pool, res = True)
+         self.blk2 = ResBlk(c*4, pool)
+         self.blk3 = ResBlk(c*8, pool, res = True)
+         self.pool = tf.keras.layers.GlobalMaxPool2D()
+         self.linear = tf.keras.layers.Dense(10, kernel_initializer=init_pytorch, use_bias=False)
+         self.weight = weight
 
       def call(self, x, y):
         h = self.pool(self.blk3(self.blk2(self.blk1(self.init_conv_bn(x)))))
@@ -108,7 +118,13 @@ So basically batch normalization leads to slightly larger signal at the output. 
         correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))
         return loss, correct
     
-7
+7. Now with our model ready we can proceed to prepare our data. First we load the standard cifar10 dataset and reshape it. Next we have to do padding by 4. This is done as follow
+
+ _np.pad(x, [(0, 0), (4, 4), (4, 4), (0, 0)], mode='reflect')_
+
+It tells the padding function that dont pad first (image id) and last dimension(channel number). Pad dimension 2 (rows) and 3 (columns) with 4 elements before and after the array. The padded elements are reflections of the elements anchored on first and last elements. i.e. [1,2,3,4,5,6] will be padded (4,4) as [5,4,3,2,**1,2,3,4,5,6**,5,4,3,2].
+
+After padding normalize the data by subtracting mean and dividing by standard deviation of the data.
 
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.cifar10.load_data()
     len_train, len_test = len(x_train), len(x_test)
@@ -124,12 +140,24 @@ So basically batch normalization leads to slightly larger signal at the output. 
     x_train = normalize(pad4(x_train))
     x_test = normalize(x_test)
     
-8
+8.Next steps to be done are setting up Learning rate scheduler, optimizer and data augmentation. 
+*LR Scheduler 
+
+_lr_schedule = lambda t: np.interp([t], [0, (EPOCHS+1)//5, EPOCHS], [0, LEARNING_RATE, 0])[0]_ 
+
+Here _[t]_ represents x coordinates at which we need interpolated values. 
+
+[0, (EPOCHS+1)//5, EPOCHS] represents known x coordinates
+
+[0, LEARNING_RATE, 0] represents known y coordinates. 
+
+So basically we are providing 3 keypoints (0,0), ((EPOCHS+1)//5,LEARNING_RATE) and (EPOCHS,0) to the _np.interp()_ and expecting interpolated values at x coordinates provided in _[t]_.
+
 
     model = DavidNet()
     batches_per_epoch = len_train//BATCH_SIZE + 1
 
-    ** lr_schedule = lambda t: np.interp([t], [0, (EPOCHS+1)//5, EPOCHS], [0, LEARNING_RATE, 0])[0]
+    lr_schedule = lambda t: np.interp([t], [0, (EPOCHS+1)//5, EPOCHS], [0, LEARNING_RATE, 0])[0]
     global_step = tf.train.get_or_create_global_step()
     lr_func = lambda: lr_schedule(global_step/batches_per_epoch)/BATCH_SIZE
     ** opt = tf.train.MomentumOptimizer(lr_func, momentum=MOMENTUM, use_nesterov=True)
