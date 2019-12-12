@@ -35,7 +35,7 @@ Code segments are described below.
          bound = 1 / math.sqrt(fan)
          return tf.random.uniform(shape, minval=-bound, maxval=bound, dtype=dtype)
          
-5. Define a class for basic Conv2D layer followed BatchNormalization,DropOut and ReLU activation.  This class has been inherited from "tf.keras.Model" class thus it inherits training and inference functionalities. Instances of this class can be used as parts or building blocks of our DNN model. 
+5.Define a class for basic Conv2D layer followed BatchNormalization,DropOut and ReLU activation.  This class has been inherited from "tf.keras.Model" class thus it inherits training and inference functionalities. Instances of this class can be used as parts or building blocks of our DNN model. 
 
 The class groups number of layers into a single class object. These layers are defined in __\_\_init\_\_()__  and how these layers are connected i.e. model forward pass is defined in  __call()__. Output of basic Conv2D layer is passed to Dropout which is in turn passed to Batchnormalization followed by ReLU activation.
 
@@ -52,7 +52,7 @@ kernels are initialized using previously defined _init_pytorch()_ function.
       def call(self, inputs):
         return tf.nn.relu(self.bn(self.drop(self.conv(inputs))))
         
-6. Define a class for custom ResNET block. Just like __ConvBN__  various components of ResNet, like basic Conv block, pooling layer and residual connection are defined in __\_\_init\_\_()__ and how these layers are connected together is defined in __call()__. Output of Basic ConvBN block is passed to pooling layer and if residual connection is required connection consisting of two ConvBN blocks is added. 
+6.Define a class for custom ResNET block. Just like __ConvBN__  various components of ResNet, like basic Conv block, pooling layer and residual connection are defined in __\_\_init\_\_()__ and how these layers are connected together is defined in __call()__. Output of Basic ConvBN block is passed to pooling layer and if residual connection is required connection consisting of two ConvBN blocks is added. 
 
 Number of kernels are passed as parameter _c_out_. Pooling layer to be used is passed as _pool_ parameter. _res_ parameter defines wheather residual connection is required.
 
@@ -72,7 +72,7 @@ Number of kernels are passed as parameter _c_out_. Pooling layer to be used is p
           h = h + self.res2(self.res1(h))
         return h
 
-6. Define the full model. Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
+7.Define the full model. Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
 
 <img src="https://github.com/davidcpage/cifar10-fast/blob/d31ad8d393dd75147b65f261dbf78670a97e48a8/net.svg">
 
@@ -89,12 +89,15 @@ This step applies scaling to the output of dense layer. self.weight is a hyperpa
 So basically batch normalization leads to slightly larger signal at the output. It is scaled down using hyperparameter weight factor. This parameter is manually tuned to 0.125 in this case.
 
 * _ce = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=h, labels=y)_
+
 This step calculates softmax cross entropy i.e. softmax classification error between h(model prediction) and y (true labels).
 
 * _loss = tf.reduce_sum(ce)_ 
+
 This step sums the error cross entropy computed in previous step.
 
 * _correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))_ 
+
 In this step _tf.argmax()_ gets actual class id from one-hot encoded _h_ vector. then _tf.math.equal()_ compares the predicted and true labels elementwise output of this is in the form of array of True and False values. _tf.cast(*,tf.float32)_ converts the truth values to float32 numbers. Finally _tf.reduce_sum()_ is used to sum the numbers to in effect find total number of true predictions. Function _call()_ returns loss value and total correct predictions.
 
 
@@ -118,7 +121,7 @@ In this step _tf.argmax()_ gets actual class id from one-hot encoded _h_ vector.
         correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))
         return loss, correct
     
-7. Now with our model ready we can proceed to prepare our data. First we load the standard cifar10 dataset and reshape it. Next we have to do padding by 4. This is done as follow
+8.Now with our model ready we can proceed to prepare our data. First we load the standard cifar10 dataset and reshape it. Next we have to do padding by 4. This is done as follow
 
  _np.pad(x, [(0, 0), (4, 4), (4, 4), (0, 0)], mode='reflect')_
 
@@ -140,8 +143,9 @@ After padding normalize the data by subtracting mean and dividing by standard de
     x_train = normalize(pad4(x_train))
     x_test = normalize(x_test)
     
-8.Next steps to be done are setting up Learning rate scheduler, optimizer and data augmentation. 
-*LR Scheduler 
+9.Next steps to be done are setting up Learning rate scheduler,Momentum optimizer and data augmentation. 
+
+* LR Scheduler 
 
 _lr_schedule = lambda t: np.interp([t], [0, (EPOCHS+1)//5, EPOCHS], [0, LEARNING_RATE, 0])[0]_ 
 
@@ -151,7 +155,19 @@ Here _[t]_ represents x coordinates at which we need interpolated values.
 
 [0, LEARNING_RATE, 0] represents known y coordinates. 
 
-So basically we are providing 3 keypoints (0,0), ((EPOCHS+1)//5,LEARNING_RATE) and (EPOCHS,0) to the _np.interp()_ and expecting interpolated values at x coordinates provided in _[t]_.
+So basically we are providing 3 keypoints (0,0), ((EPOCHS+1)//5,LEARNING_RATE) and (EPOCHS,0) to the _np.interp()_ and expecting interpolated values at x coordinates provided in _[t]_. 
+
+* Momentum optimizer 
+
+_opt = tf.train.MomentumOptimizer(lr_func, momentum=MOMENTUM, use_nesterov=True)_
+
+It uses inbuilt tensorflow momentum optimizer. It takes learning rates as input and computes momentum at each step.
+
+* Data augmentation 
+
+_data_aug = lambda x, y: (tf.image.random_flip_left_right(tf.random_crop(x, [32, 32, 3])), y)_ 
+
+We have already padded (with 4 elements) and normalized our data. We now randomly crop 32x32x3 image. Next we perform random horizontal flips.
 
 
     model = DavidNet()
@@ -160,10 +176,31 @@ So basically we are providing 3 keypoints (0,0), ((EPOCHS+1)//5,LEARNING_RATE) a
     lr_schedule = lambda t: np.interp([t], [0, (EPOCHS+1)//5, EPOCHS], [0, LEARNING_RATE, 0])[0]
     global_step = tf.train.get_or_create_global_step()
     lr_func = lambda: lr_schedule(global_step/batches_per_epoch)/BATCH_SIZE
-    ** opt = tf.train.MomentumOptimizer(lr_func, momentum=MOMENTUM, use_nesterov=True)
+    opt = tf.train.MomentumOptimizer(lr_func, momentum=MOMENTUM, use_nesterov=True)
     data_aug = lambda x, y: (tf.image.random_flip_left_right(tf.random_crop(x, [32, 32, 3])), y)
 
-9  explain :tensor_slices, prefetch, "for g, v in zip(grads, var):
+9.Now we are all set to train our model. Some important steps are as follows.
+
+* Generate test batches
+
+_test_set = tf.data.Dataset.from_tensor_slices((x_test, y_test)).batch(BATCH_SIZE)_
+
+Here _from_tensor_slices((x_test, y_test))_ will create a Dataset whose elements are slices of tensors _x_test_ and _y_test_. It gives us slices of input data combined with its ground truth labels. 
+
+_batch(BATCH_SIZE)_ method will generate batches of size _BATCH_SIZE_ from the dataset.
+
+Effectively this piece of code will generate a batchwise test data similar to imageDataGenerator in Keras.
+
+* Generate train batches
+
+_train_set = tf.data.Dataset.from_tensor_slices((x_train, y_train)).map(data_aug).shuffle(len_train).batch(BATCH_SIZE).prefetch(1)_
+
+Similar to test set, _rom_tensor_slices((x_train, y_train))_ will create a dataset from _x_train_ and _y_train_. further we apply data augmentation we prepared earlier using _map(data_aug)_. Next we shuffle the data using _shuffle(len_train)_. Finally we generate batches of size _BATCH_SIZE_ from the prepared dataset. 
+
+To speed up the training process we make use of multithreading functionality provided by tensorflow. This is done using _prefetch()_ method. What it does is, when the model is executing training step s it prepares the data for step s+1.
+
+
+explain :tensor_slices, prefetch, "for g, v in zip(grads, var):
           g += v * WEIGHT_DECAY * BATCH_SIZE
         opt.apply_gradients(zip(grads, var), global_step=global_step)"
         why:  train_loss += loss.numpy()
