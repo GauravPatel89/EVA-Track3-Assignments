@@ -191,18 +191,52 @@ _batch(BATCH_SIZE)_ method will generate batches of size _BATCH_SIZE_ from the d
 
 Effectively this piece of code will generate a batchwise test data similar to imageDataGenerator in Keras.
 
-* Generate train batches
+* Generate train batches each epoch
 
 _train_set = tf.data.Dataset.from_tensor_slices((x_train, y_train)).map(data_aug).shuffle(len_train).batch(BATCH_SIZE).prefetch(1)_
 
 Similar to test set, _rom_tensor_slices((x_train, y_train))_ will create a dataset from _x_train_ and _y_train_. further we apply data augmentation we prepared earlier using _map(data_aug)_. Next we shuffle the data using _shuffle(len_train)_. Finally we generate batches of size _BATCH_SIZE_ from the prepared dataset. 
 
-To speed up the training process we make use of multithreading functionality provided by tensorflow. This is done using _prefetch()_ method. What it does is, when the model is executing training step s it prepares the data for step s+1.
+To speed up the training process we make use of multithreading functionality provided by tensorflow. This is done using _prefetch()_ method. What it does is, when the model is executing training step s it prepares the data for step s+1. Here _batch(BATCH_SIZE).prefetch(1)_ indicates that 1 batch of size BATCH_SIZE will be prefetched while one batch is being consumed by training process.
+
+* Set learning phase 
+
+_tf.keras.backend.set_learning_phase(1)_
+
+This sets learning phase as '1' indicating training phase. This is passed as input to keras functions that uses a different behavior at train time and test time.(0 = test, 1 = train).
+
+* Perform training
+
+Iterate through the training set : _for (x, y) in tqdm(train_set)_
+
+Function tqdm displays progress bar as we proceed through the dataset. 
+
+For each loaded data, evaluate the model to find loss and number of correct predictions : _loss, correct = model(x, y)_
+
+To perform training we will be needing weight gradients. This is accomplished using _tf.GradientTape()_. When this is used all the operations in its context manager are recorded. All the trainable parameters are watched and we can find gradient for it using _tape.gradient(loss, var)_. 
+
+Setup _GradientTape_ inside for loop:  _with tf.GradientTape() as tape:_
+
+Find gradient of loss w.r.t model parameters :
+
+    var = model.trainable_variables
+    grads = tape.gradient(loss, var)
+    
+Apply weight decay:
+
+    for g, v in zip(grads, var):
+       g += v * WEIGHT_DECAY * BATCH_SIZE
+    
+we add this to 
+\begin{equation}
+w_i \leftarrow w_i-\eta\frac{\partial E}{\partial w_i}-\eta\lambda w_i.
+\end{equation}
 
 
-explain :tensor_slices, prefetch, "for g, v in zip(grads, var):
-          g += v * WEIGHT_DECAY * BATCH_SIZE
-        opt.apply_gradients(zip(grads, var), global_step=global_step)"
+
+
+
+
         why:  train_loss += loss.numpy()
         train_acc += correct.numpy()
 
