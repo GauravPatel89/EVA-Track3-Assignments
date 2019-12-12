@@ -223,6 +223,7 @@ Find gradient of loss w.r.t model parameters :
     grads = tape.gradient(loss, var)
     
 Apply weight decay:
+<img src="weight_decay.png">
 
     for g, v in zip(grads, var):
        g += v * WEIGHT_DECAY * BATCH_SIZE
