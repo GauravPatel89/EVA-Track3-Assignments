@@ -1,4 +1,4 @@
-# DavidNet training using One Cycle training policy
+# DavidNet model training using One Cycle training policy
 
 Cifar10 is a classic dataset in the field of deep learning. It has 60000 colour images of size 32×32 images belonging to 10 different classes (6000 images/class). Training Cifar10 to accuracy of 94% is quite challenging and doing it in few 100 seconds and in cost effective way is even more challenging. DAWNBench competition (https://dawn.cs.stanford.edu/benchmark/index.html#cifar10) targets this particular aspect. One of the winner model(Nov 2018 - Apr 2019) on DAWNBench, is by David C. Page. It is a custom built 9-Layer ResNet model. It takes just 1 min 15 sec to achieve 94.08% accuracy. Following is an implementation of model used by David C. Page and trained using One cycle training policy.
 
@@ -81,7 +81,7 @@ Number of kernels are passed as parameter _c_out_. Pooling layer to be used is p
           h = h + self.res2(self.res1(h))
         return h
 
-## 7.Define the full model.
+## 7.Define Entire model.
 
 Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
 
@@ -89,6 +89,28 @@ Again the same procedure is followed. We define a DavidNet class. Various layers
 
 It has initial ConvBN block with 64 kernels. Followed by a ResNet block with residual connection with 128 kernels, then ResNet block with 256 kernels and no residual connection. This is followed by ResNet block with 512 kernels and residual connection. After this we have globalmMaxPooling layer. Output of GlobalMaxPooling is then passed to a Dense layer to get 10x1x1 output. These outputs are scaled by 0.125 and passed to a softmax layer to get the final output. 
 
+
+     class DavidNet(tf.keras.Model):
+       def __init__(self, c=64, weight=0.125):
+         super().__init__()
+         pool = tf.keras.layers.MaxPooling2D()
+         self.init_conv_bn = ConvBN(c)
+         self.blk1 = ResBlk(c*2, pool, res = True)
+         self.blk2 = ResBlk(c*4, pool)
+         self.blk3 = ResBlk(c*8, pool, res = True)
+         self.pool = tf.keras.layers.GlobalMaxPool2D()
+         self.linear = tf.keras.layers.Dense(10, kernel_initializer=init_pytorch, use_bias=False)
+         self.weight = weight
+
+      def call(self, x, y):
+        h = self.pool(self.blk3(self.blk2(self.blk1(self.init_conv_bn(x)))))
+        h = self.linear(h) * self.weight
+        ce = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=h, labels=y)
+        loss = tf.reduce_sum(ce)
+        correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))
+        return loss, correct
+    
+    
 We must pay attention to some of the steps.
 
 * _h = self.linear(h) * self.weight_
@@ -112,26 +134,7 @@ This step sums the error cross entropy computed in previous step.
 In this step _tf.argmax()_ gets actual class id from one-hot encoded _h_ vector. then _tf.math.equal()_ compares the predicted and true labels elementwise output of this is in the form of array of True and False values. _tf.cast(*,tf.float32)_ converts the truth values to float32 numbers. Finally _tf.reduce_sum()_ is used to sum the numbers to in effect find total number of true predictions. Function _call()_ returns loss value and total correct predictions.
 
 
-     class DavidNet(tf.keras.Model):
-       def __init__(self, c=64, weight=0.125):
-         super().__init__()
-         pool = tf.keras.layers.MaxPooling2D()
-         self.init_conv_bn = ConvBN(c)
-         self.blk1 = ResBlk(c*2, pool, res = True)
-         self.blk2 = ResBlk(c*4, pool)
-         self.blk3 = ResBlk(c*8, pool, res = True)
-         self.pool = tf.keras.layers.GlobalMaxPool2D()
-         self.linear = tf.keras.layers.Dense(10, kernel_initializer=init_pytorch, use_bias=False)
-         self.weight = weight
 
-      def call(self, x, y):
-        h = self.pool(self.blk3(self.blk2(self.blk1(self.init_conv_bn(x)))))
-        h = self.linear(h) * self.weight
-        ce = tf.nn.sparse_softmax_cross_entropy_with_logits(logits=h, labels=y)
-        loss = tf.reduce_sum(ce)
-        correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))
-        return loss, correct
-    
 ## 8. Data preprocessing.
 
 Now with our model ready we can proceed to prepare our data. First we load the standard cifar10 dataset and reshape it. Next we have to do padding by 4. This is done as follow
