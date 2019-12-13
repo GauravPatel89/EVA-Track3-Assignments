@@ -329,6 +329,6 @@ Entire code segment is given below
 
 ## Complete code
 
-C
+
 Complete code can be found at https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1 code
 
