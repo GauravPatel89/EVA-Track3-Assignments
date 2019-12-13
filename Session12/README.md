@@ -1,11 +1,11 @@
-# 94% Accuracy on CIFAR10 using One Cycle training policy
+# DavidNet training using One Cycle training policy
 
 Cifar10 is a classic dataset in the field of deep learning. It has 60000 colour images of size 32×32 images belonging to 10 different classes (6000 images/class). Training Cifar10 to accuracy of 94% is quite challenging and doing it in few 100 seconds and in cost effective way is even more challenging. DAWNBench competition (https://dawn.cs.stanford.edu/benchmark/index.html#cifar10) targets this particular aspect. One of the winner model(Nov 2018 - Apr 2019) on DAWNBench, is by David C. Page. It is a custom built 9-Layer ResNet model. It takes just 1 min 15 sec to achieve 94.08% accuracy. Following is an implementation of model used by David C. Page and trained using One cycle training policy.
 
 Complete code can be found at https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1
 Code segments are described below.
  
-1.Import necessary modules
+## 1.Import necessary modules
 
 
      import numpy as np
@@ -15,12 +15,15 @@ Code segments are described below.
      import tensorflow.contrib.eager as tfe
     
     
-2.Enable tensorflow eagermode. In tensorflow everything is computational graph so if we wanted to debug or check
-  small part of our code, it will not be possible unless entire graph has been defined and we run entire graph. This can be cumbersome process. Enabling tensorflow eagermode allows us to evaluate code segments immediately without building graphs. For more information refer https://www.tensorflow.org/guide/eager
+## 2.Enable tensorflow eagermode.
+
+In tensorflow everything is computational graph so if we wanted to debug or check small part of our code, it will not be possible unless entire graph has been defined and we run entire graph. This can be cumbersome process. Enabling tensorflow eagermode allows us to evaluate code segments immediately without building graphs. For more information refer https://www.tensorflow.org/guide/eager
 
     tf.enable_eager_execution()
     
-3.Use Forms to parameterize the code. Using this we can allow user input for adjusting parameters in our code. We parameterize Batch size, momentum, learning rate, weight decay and number of epochs.
+## 3.Use Forms to parameterize the code. 
+
+Using this we can allow user input for adjusting parameters in our code. We parameterize Batch size, momentum, learning rate, weight decay and number of epochs.
 
     BATCH_SIZE = 512 #@param {type:"integer"}
     MOMENTUM = 0.9 #@param {type:"number"}
@@ -28,14 +31,18 @@ Code segments are described below.
     WEIGHT_DECAY = 5e-4 #@param {type:"number"}
     EPOCHS = 24 #@param {type:"integer"}
     
-4.Define a function to initialize layer weights. This function has been defined here because DavidNet model uses PyTorch but the way PyTorch intializes model layer weights has no equivalent in tensorflow.
+## 4.Define a function to initialize layer weights. 
+
+This function has been defined here because DavidNet model uses PyTorch but the way PyTorch intializes model layer weights has no equivalent in tensorflow.
 
     def init_pytorch(shape, dtype=tf.float32, partition_info=None):
          fan = np.prod(shape[:-1])
          bound = 1 / math.sqrt(fan)
          return tf.random.uniform(shape, minval=-bound, maxval=bound, dtype=dtype)
          
-5.Define a class for basic Conv2D layer followed BatchNormalization,DropOut and ReLU activation.  This class has been inherited from "tf.keras.Model" class thus it inherits training and inference functionalities. Instances of this class can be used as parts or building blocks of our DNN model. 
+## 5.Define a class for basic Convolution block.
+
+In this class Conv2D layer followed BatchNormalization,DropOut and ReLU activation.  This class has been inherited from "tf.keras.Model" class thus it inherits training and inference functionalities. Instances of this class can be used as parts or building blocks of our DNN model. 
 
 The class groups number of layers into a single class object. These layers are defined in __\_\_init\_\_()__  and how these layers are connected i.e. model forward pass is defined in  __call()__. Output of basic Conv2D layer is passed to Dropout which is in turn passed to Batchnormalization followed by ReLU activation.
 
@@ -52,7 +59,9 @@ kernels are initialized using previously defined _init_pytorch()_ function.
       def call(self, inputs):
         return tf.nn.relu(self.bn(self.drop(self.conv(inputs))))
         
-6.Define a class for custom ResNET block. Just like __ConvBN__  various components of ResNet, like basic Conv block, pooling layer and residual connection are defined in __\_\_init\_\_()__ and how these layers are connected together is defined in __call()__. Output of Basic ConvBN block is passed to pooling layer and if residual connection is required connection consisting of two ConvBN blocks is added. 
+## 6.Define a class for custom ResNET block. 
+
+Just like __ConvBN__  various components of ResNet, like basic Conv block, pooling layer and residual connection are defined in __\_\_init\_\_()__ and how these layers are connected together is defined in __call()__. Output of Basic ConvBN block is passed to pooling layer and if residual connection is required connection consisting of two ConvBN blocks is added. 
 
 Number of kernels are passed as parameter _c_out_. Pooling layer to be used is passed as _pool_ parameter. _res_ parameter defines wheather residual connection is required.
 
@@ -72,7 +81,9 @@ Number of kernels are passed as parameter _c_out_. Pooling layer to be used is p
           h = h + self.res2(self.res1(h))
         return h
 
-7.Define the full model. Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
+## 7.Define the full model.
+
+Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
 
 <img src="https://github.com/davidcpage/cifar10-fast/blob/d31ad8d393dd75147b65f261dbf78670a97e48a8/net.svg">
 
@@ -121,7 +132,9 @@ In this step _tf.argmax()_ gets actual class id from one-hot encoded _h_ vector.
         correct = tf.reduce_sum(tf.cast(tf.math.equal(tf.argmax(h, axis = 1), y), tf.float32))
         return loss, correct
     
-8.Now with our model ready we can proceed to prepare our data. First we load the standard cifar10 dataset and reshape it. Next we have to do padding by 4. This is done as follow
+## 8. Data preprocessing.
+
+Now with our model ready we can proceed to prepare our data. First we load the standard cifar10 dataset and reshape it. Next we have to do padding by 4. This is done as follow
 
  _np.pad(x, [(0, 0), (4, 4), (4, 4), (0, 0)], mode='reflect')_
 
@@ -143,7 +156,9 @@ After padding normalize the data by subtracting mean and dividing by standard de
     x_train = normalize(pad4(x_train))
     x_test = normalize(x_test)
     
-9.Next steps to be done are setting up Learning rate scheduler,Momentum optimizer and data augmentation. 
+## 9. Set up Learning rate scheduler, Momentum optimizer and data augmentation
+
+Next steps to be done are setting up Learning rate scheduler,Momentum optimizer and data augmentation. 
 
 * LR Scheduler 
 
@@ -179,7 +194,9 @@ We have already padded (with 4 elements) and normalized our data. We now randoml
     opt = tf.train.MomentumOptimizer(lr_func, momentum=MOMENTUM, use_nesterov=True)
     data_aug = lambda x, y: (tf.image.random_flip_left_right(tf.random_crop(x, [32, 32, 3])), y)
 
-9.Now we are all set to train our model. Some important steps are as follows.
+## 9.Model Training
+
+Now we are all set to train our model. Some important steps are as follows.
 
 * Generate test batches
 
