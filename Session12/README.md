@@ -325,3 +325,10 @@ Entire code segment is given below
       print('epoch:', epoch+1, 'lr:', lr_schedule(epoch+1),
       'train loss:', train_loss / len_train, 'train acc:', train_acc / len_train,
       'val loss:', test_loss / len_test, 'val acc:', test_acc / len_test, 'time:', time.time() - t)
+
+
+## Complete code
+
+C
+Complete code can be found at https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1 code
+
