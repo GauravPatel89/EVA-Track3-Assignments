@@ -125,7 +125,7 @@ class Cifar10DataSet(object):
     label = tf.cast(features['label'], tf.int32)
     label = tf.one_hot(label, NUM_CLASSES)
     # Custom preprocessing.
-    image = self.preprocess(image)
+    #image = self.preprocess(image)
 
     return image, label
 
