@@ -18,6 +18,7 @@ Import all the necessary packages and libraries.
 
 
 ### Step 1:
+![Step1_ReplayBuffer](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step1_ReplayBuffer.png)
 Define ReplayBuffer class.
 
     class ReplayBuffer(object):
@@ -60,6 +61,8 @@ These batches are returned as numpy arrays as seen in the last code statement.
 
 ### Step 2:
 
+![Step2_Actor ](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step2_Actor.png)
+
 Define Actor class.  
 
     class Actor(nn.Module):
@@ -89,7 +92,7 @@ This method links the layers defined in the above method to create a complete ne
     
 
 ### Step 3:
-
+![Step3_Critic](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step3_Critic.png)
 Define Critic class. 
     
     class Critic(nn.Module):
@@ -139,6 +142,7 @@ This method is similar to *forward()* method except that here forward pass of on
 
 
 ### Step 4-15:
+![Step4_15_TD3](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step4_15_TD3.png)
 Define TD3 class. 
 
     class TD3(object):
