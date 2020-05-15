@@ -1,13 +1,53 @@
 ### Initializations:
-
-![Initializations](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Initialization.png)
-
 Import all the necessary packages and libraries.
 
-### Step 1:
-![Step 1](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step1.png)
+    import os
+    import time
+    import random
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import pybullet_envs
+    import gym
+    import torch
+    import torch.nn as nn
+    import torch.nn.functional as F
+    from gym import wrappers
+    from torch.autograd import Variable
+    from collections import deque
 
-Define ReplayBuffer class. Object of this class will be used to store the experiences of the agent while acting in the environment. It stores each experience as a tuple **<state,next_state,action,reward,done>**. Its size will be specified as **max_size** at the time of its instance creation.
+
+
+### Step 1:
+![Step1_ReplayBuffer](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step1_ReplayBuffer.png)
+Define ReplayBuffer class.
+
+    class ReplayBuffer(object):
+
+      def __init__(self, max_size=1e6):
+        self.storage = []
+        self.max_size = max_size
+        self.ptr = 0
+    
+      def add(self, transition):
+        if len(self.storage) == self.max_size:
+          self.storage[int(self.ptr)] = transition
+          self.ptr = (self.ptr + 1) % self.max_size
+        else:
+          self.storage.append(transition)
+    
+      def sample(self, batch_size):
+        ind = np.random.randint(0, len(self.storage), size=batch_size)
+        batch_states, batch_next_states, batch_actions, batch_rewards, batch_dones = [], [], [], [], []
+        for i in ind: 
+          state, next_state, action, reward, done = self.storage[i]
+          batch_states.append(np.array(state, copy=False))
+          batch_next_states.append(np.array(next_state, copy=False))
+          batch_actions.append(np.array(action, copy=False))
+          batch_rewards.append(np.array(reward, copy=False))
+          batch_dones.append(np.array(done, copy=False))
+        return np.array(batch_states), np.array(batch_next_states), np.array(batch_actions), np.array(batch_rewards).reshape(-1, 1), np.array(batch_dones).reshape(-1, 1)
+
+Object of this class will be used to store the experiences of the agent while acting in the environment. It stores each experience as a tuple **<state,next_state,action,reward,done>**. Its size will be specified as **max_size** at the time of its instance creation.
 
 To utilize this class following methods are defined.
 
@@ -18,12 +58,29 @@ Adds a transition (an experience tuple) into ReplayBuffer. If the memory is full
 It creates a batches of **state,next_state,action,reward and done** of size **batch_size** by uniformly sampling the ReplayBuffer.
 These batches are returned as numpy arrays as seen in the last code statement.
 
+This step can be summarised as shown below.
+
 
 ### Step 2:
-![Step 2](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step2.png)
-![](file:///D:\gaurav\eva\session9\Assignment\images\Step2.png)
+![Step2_Actor ](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step2_Actor.png)
+Define Actor class.  
 
-Define Actor class. This class defines the model or network used by Actors. In TD3 algorithm we need two actors, actor_model and actor_target. Since both the actors need to be identical we define a common Actor class. We will use two instances of this class as actor model and actor target.  
+    class Actor(nn.Module):
+      def __init__(self, state_dim, action_dim, max_action):
+        super(Actor, self).__init__()
+        self.layer_1 = nn.Linear(state_dim, 400)
+        self.layer_2 = nn.Linear(400, 300)
+        self.layer_3 = nn.Linear(300, action_dim)
+        self.max_action = max_action
+    
+      def forward(self, x):
+        x = F.relu(self.layer_1(x))
+        x = F.relu(self.layer_2(x))
+        x = self.max_action * torch.tanh(self.layer_3(x))
+        return x
+
+
+This class defines the model or network used by Actors. In TD3 algorithm we need two actors, actor_model and actor_target. Since both the actors need to be identical we define a common Actor class. We will use two instances of this class as actor model and actor target.  
 We have two methods in this class.
 
 1. \_\_init__(self, state_dims, action_dim, max_action)  
@@ -32,12 +89,48 @@ We define 3 layers. Each of the layers are linear layers meaning they are fully 
 
 2.  forward(self,x)  
 This method links the layers defined in the above method to create a complete network. The network takes *state_dim* number of inputs and gives *action_dim* number of outputs. The first two layers have *relu* as its activation functions. The last layer has *tanh* as activation function. It must be noted the output of final layer is multiplied by *max_action*, since output of *tanh* varies from -1 to 1, output of Actor network will vary from *-max_action* to *max_action*.
+
+
     
 
 ### Step 3:
-![Step 3](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step3.png)
-![](file:///D:\gaurav\eva\session9\Assignment\images\Step3.png)
-Define Critic class. This class defines the model or network used by Critics. In TD3 algorithm we need two pairs of competing critics each pair consisting of a critic model  and a critic target. All of these 4 critics need to be identical. Here in this class we jointly define two competing critics. Although they are defined together they both act independently. We will use two instances of this class as critic model and critic target
+![Step3_Critic](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step3_Critic.png)
+Define Critic class. 
+    
+    class Critic(nn.Module):
+      
+      def __init__(self, state_dim, action_dim):
+        super(Critic, self).__init__()
+        # Defining the first Critic neural network
+        self.layer_1 = nn.Linear(state_dim + action_dim, 400)
+        self.layer_2 = nn.Linear(400, 300)
+        self.layer_3 = nn.Linear(300, 1)
+        # Defining the second Critic neural network
+        self.layer_4 = nn.Linear(state_dim + action_dim, 400)
+        self.layer_5 = nn.Linear(400, 300)
+        self.layer_6 = nn.Linear(300, 1)
+    
+      def forward(self, x, u):
+        xu = torch.cat([x, u], 1)
+        # Forward-Propagation on the first Critic Neural Network
+        x1 = F.relu(self.layer_1(xu))
+        x1 = F.relu(self.layer_2(x1))
+        x1 = self.layer_3(x1)
+        # Forward-Propagation on the second Critic Neural Network
+        x2 = F.relu(self.layer_4(xu))
+        x2 = F.relu(self.layer_5(x2))
+        x2 = self.layer_6(x2)
+        return x1, x2
+    
+      def Q1(self, x, u):
+        xu = torch.cat([x, u], 1)
+        x1 = F.relu(self.layer_1(xu))
+        x1 = F.relu(self.layer_2(x1))
+        x1 = self.layer_3(x1)
+        return x1
+
+
+This class defines the model or network used by Critics. In TD3 algorithm we need two pairs of competing critics each pair consisting of a critic model  and a critic target. All of these 4 critics need to be identical. Here in this class we jointly define two competing critics. Although they are defined together they both act independently. We will use two instances of this class as critic model and critic target
 We have 3 methods in this class.
 1. \_\_init__(self, state_dims, action_dim)  
 In this method we define the layers used by Critic class. These layers will be connected together later in the **forward()** method to create a network.  
@@ -51,10 +144,27 @@ This method is similar to *forward()* method except that here forward pass of on
 
 
 ### Step 4-15:
-![Step 4-15](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step4-15.png)
-![](file:///D:\gaurav\eva\session9\Assignment\images\Step4-15.png)
+![Step4_15_TD3](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step4_15_TD3.png)
+Define TD3 class. 
 
-Define TD3 class. This class will define our entire TD3 algorithm. It will define all the Actor, Critic objects and its optimizers. It will also define the training algorithm. Two methods of the class are shown in above image.
+    class TD3(object):
+      
+      def __init__(self, state_dim, action_dim, max_action):
+        self.actor = Actor(state_dim, action_dim, max_action).to(device)
+        self.actor_target = Actor(state_dim, action_dim, max_action).to(device)
+        self.actor_target.load_state_dict(self.actor.state_dict())
+        self.actor_optimizer = torch.optim.Adam(self.actor.parameters())
+        self.critic = Critic(state_dim, action_dim).to(device)
+        self.critic_target = Critic(state_dim, action_dim).to(device)
+        self.critic_target.load_state_dict(self.critic.state_dict())
+        self.critic_optimizer = torch.optim.Adam(self.critic.parameters())
+        self.max_action = max_action
+    
+      def select_action(self, state):
+        state = torch.Tensor(state.reshape(1, -1)).to(device)
+        return self.actor(state).cpu().data.numpy().flatten()
+        
+This class will define our entire TD3 algorithm. It will define all the Actor, Critic objects and its optimizers. It will also define the training algorithm. Two methods of the class are shown in above image.
 
 1. \_\_init__(self, state_dim, action_dim, max_action)  
 In this method we define all the objects of TD3 algorithm  
@@ -80,9 +190,21 @@ In this method we define all the objects of TD3 algorithm
     Here *to(device)* transfers state to a cpu or gpu as per the availability.  
     Next, the *state* tensor is forward passed through the Actor Model network to get the computed *action*. The action is converted to numpy and flattened (make 1D) before returning.
 ### Step 4:
-![Step 4](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step4.png)
-![](file:///D:\gaurav\eva\session9\Assignment\images\Step4.png)
+![Step4_Sample](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step4_Sample.png)
 Define Train Method of TD3 class.  
+
+    def train(self, replay_buffer, iterations, batch_size=100, discount=0.99, tau=0.005, policy_noise=0.2, noise_clip=0.5, policy_freq=2):
+    
+    for it in range(iterations):
+      
+      # Step 4: We sample a batch of transitions (s, s’, a, r) from the memory
+      batch_states, batch_next_states, batch_actions, batch_rewards, batch_dones = replay_buffer.sample(batch_size)
+      state = torch.Tensor(batch_states).to(device)
+      next_state = torch.Tensor(batch_next_states).to(device)
+      action = torch.Tensor(batch_actions).to(device)
+      reward = torch.Tensor(batch_rewards).to(device)
+      done = torch.Tensor(batch_dones).to(device)
+
 For each of the iterations, sample a batch of size *batch_size* from ReplayBuffer.  
 
     batch_states, batch_next_states, batch_actions, batch_rewards, batch_dones = replay_buffer.sample(batch_size)
@@ -95,14 +217,20 @@ For each of the iterations, sample a batch of size *batch_size* from ReplayBuffe
     done = torch.Tensor(batch_dones).to(device)
 
 ### Step 5:
-![Step 5](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step5.png)
-![](file:///D:\gaurav\eva\session9\Assignment\images\Step5.png)
-Generate actions for next_states through Actor Target. It must be noted here that *next_state* here corresponds to entire batch of next states obtained by sampling the ReplayBuffer in the previous step. Also we are using the Actor Target and not Actor Model. In TD3 algorithm for acting purpose Actor Model is used while for equation calculations Actor Model is used. *next_action* obtained here will be used in calculation of Q-Values.
+![Step5_ActorTargetForward](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step5.png)
+Generate actions for next_states through Actor Target. 
+
+    next_action = self.actor_target(next_state)
+It must be noted here that *next_state* here corresponds to entire batch of next states obtained by sampling the ReplayBuffer in the previous step. Also we are using the Actor Target and not Actor Model. In TD3 algorithm for acting purpose Actor Model is used while for equation calculations Actor Model is used. *next_action* obtained here will be used in calculation of Q-Values.
 
 ### Step 6:
-![Step 6](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step6.png)
-![](file:///D:\gaurav\eva\session9\Assignment\images\Step6.png)
+![Step6_AddNoise](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step6_AddNoise.png)
 Add noise to predicted actions. 
+
+    noise = torch.Tensor(batch_actions).data.normal_(0, policy_noise).to(device)
+    noise = noise.clamp(-noise_clip, noise_clip)
+    next_action = (next_action + noise).clamp(-self.max_action, self.max_action)
+    
 Noise values are sampled from a normal distribution with 0 mean and *policy_noise* as standard deviation. *noise* here is a tensor of size same as *batch_actions* i.e. batch_size .
 
     noise = torch.Tensor(batch_actions).data.normal_(0, policy_noise).to(device)
@@ -116,21 +244,20 @@ Finally we add the noise to *next_action*. We again clip the values to range of 
 
 
 ### Step 7:
-![Step 7](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step7.png)
+![Step7_CriticTarget](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step7_CriticTarget.png)
 Obtain Q-Values from Critic Targets for sampled batch of *next_state* and *next_actions* generated by Actor Target.  
 
     target_Q1, target_Q2 = self.critic_target(next_state, next_action)
 It must again be noted that we are using Critic Target here since these Q-values will be used in equation computations. When we are acting in the environment we will used Critic Model. 
 
 ### Step 8:
-![Step 8](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step8.png)
-
+![Step8_CriticMin](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step8_CriticMin.png)
 Select the minimum of two Critic Q-values.
 
     target_Q = torch.min(target_Q1, target_Q2)
 
 ### Step 9:
-![Step 9](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step9.png)
+![Step9_CriticBelmanEqn](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step9_CriticBelmanEqn.png)
 Compute the expected Q value for current state using the Bellman Equation. This value will be compared with predicted Q-Value later to get the temporal difference. 
 
     target_Q = reward + ((1 - done) * discount * target_Q).detach()
@@ -145,7 +272,7 @@ Whenever transition is non-terminal state, *target_Q* will be normally evaluated
 This is to detach *target_Q* computation from the computation graph. Doing this, pytorch will not track the operations on this subgraph.
 
 ### Step 10:
-![Step 10](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step10.png)
+![Step10_CriticModel](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step10_CriticModel.png)
 Obtain predicted Q-Values from Model Critics for current state and action.  
 
     current_Q1, current_Q2 = self.critic(state, action)
@@ -154,15 +281,16 @@ Here we obtain Q-Values from two critics for a batch *current_state* and *curren
 
 
 ### Step 11:
-![Step 11](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step11.png)
-Calculate Critic loss. We have already calculated expected Q-Values (*target_Q*) and predicted Q-Values (*current_Q1, current_Q2*). We find the temporal difference between them to get Critic loss. 
+![Step11_CriticLoss](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step11_CriticLoss.png)
+Calculate Critic loss. 
 
     critic_loss = F.mse_loss(current_Q1, target_Q) + F.mse_loss(current_Q2, target_Q)
+We have already calculated expected Q-Values (*target_Q*) and predicted Q-Values (*current_Q1, current_Q2*). We find the temporal difference between them to get Critic loss. 
 
 It must be noted that we have calculated combined loss of Critic 1 and Critic 2, this is because both the critics are defined in Critic class together. So *critic_loss* will be used for combined training of the critics.
 
 ### Step 12:
-![Step 12](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step12.png)  
+![Step12_CriticModelUpdate](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step12_CriticModelUpdate.png)
 Update Critic Model through back propagation.  
 
     self.critic_optimizer.zero_grad()
@@ -176,8 +304,7 @@ It must be noted here that we are updating Critic Model. Critic Targets are neve
 
 
 ### Step 13:
-![Step 13](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step13.png)
-
+![Step13_ActorModelUpdate](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step13_ActorModelUpdate.png)
 Update Actor Model through backpropagation every *policy_freq*'th iteration.
 
     if it % policy_freq == 0:
@@ -199,7 +326,7 @@ Since we have -ve sign, optimizer will perform gradient ascent on Actor Model pa
 Next we initialize actor_optimizer gradients to zero, perform backward pass to record gradients and finally step through to update Actor Model parameters.
     
 ### Step 14:
-![Step 14](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step14.png)
+![Step14_ActorTargetUpdate](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step14_ActorTargetUpdate.png)
 Update Actor Target through Polyak Averaging.
 
     for param, target_param in zip(self.actor.parameters(), self.actor_target.parameters()):
@@ -212,7 +339,7 @@ We generate an iterator of matched pair of Actor Model and Actor Target paramete
 We now loop through this iterator and copy Actor Model parameters into Actor Target with Polyak averaging.
 
 ### Step 15:
-![Step 15](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Images/Step15.png)
+![Step15_CriticTargetUpdate](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/P2S9/Figures/Step15_CriticTargetUpdate.png)
 Update Critic Target through Polyak Averaging.
 
     for param, target_param in zip(self.critic.parameters(), self.critic_target.parameters()):
