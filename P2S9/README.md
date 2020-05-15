@@ -1,3 +1,21 @@
+# Implementing Twin Delayed Deep Deterministic Policy Gradient (TD3) Algorithm
+
+## **Phase 2 Session 9: Assignment**
+---
+1. Well, there is a reason why this code is in the image, and not pasted.
+2. You need to:
+    1. write this code down on a Colab file, upload it to GitHub.
+    2. write a Readme file explaining all the 15 steps we have taken:
+        1. read me must explain each part of the code
+        2. each part of the code must be accompanied with a drawing/image (you cannot use the images from the course content)
+    3. Upload the link.
+
+---
+## **Twin Delayed DDPG (TD3)**
+**TD3** is Q-learning based RL algorithm for environments with continuous action spaces.Original paper can be found ![here](https://arxiv.org/pdf/1802.09477.pdf). This repository implements TD3 algorithm for PyBullet Ant (AntBulletEnv-v0) environment. Entire code can be found [here](). Implementation steps are explained below.
+
+---
+
 ### Initializations:
 Import all the necessary packages and libraries.
 
