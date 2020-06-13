@@ -78,7 +78,7 @@ meanReward = []
 #%%
 liveView = True
 printDebugValues = False
-createVideo = False
+createVideo = True
 reqdRewardPlot = False
 
 # Reset environment
@@ -129,10 +129,7 @@ while done == False:
     # Move over to next_state and repeat the loop
     state = next_state
     
-    
-if liveView == True:   
-    cv2.destroyAllWindows() # destroy Live view window
-    
-if createVideo == True:
-    out.release()       # Release the video writer
+      
+cv2.destroyAllWindows() # destroy Live view window
+out.release()       # Release the video writer
 
