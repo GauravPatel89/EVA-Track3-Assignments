@@ -53,7 +53,7 @@ Important components and utilities of the environment are explained below.
 #### State space:
 State for the environment consists of list of 4 elements  
 1. Current state image:  
-Current state image for the environment is a cropped view of road network in car's front view i.e. how car is viewing the area around it. In this view car is always facing front but area around it changes as car navigates as shown below.
-
-![stateImg](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/stateImage.gif)
+Current state image for the environment is a cropped view of road network in car's front view i.e. how car is viewing the area around it. In this view car is always facing front but area around it changes as car navigates as shown below.  
+![stateImg](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/stateImage.gif)  
+Currently it is selected to be 40x40 size image.This image is estimated by cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size.
 
