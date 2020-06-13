@@ -51,9 +51,25 @@ To simulate the car navigation task an environment has been defined. Environment
 Important components and utilities of the environment are explained below.
 
 #### State space:
-State for the environment consists of list of 4 elements  
+State for the environment consists of list of 4 elements.  
 1. Current state image:  
 Current state image for the environment is a cropped view of road network in car's front view i.e. how car is viewing the area around it. In this view car is always facing front but area around it changes as car navigates as shown below.  
 ![stateImg](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/stateImage.gif)  
-Currently it is selected to be 40x40 size image.This image is estimated by cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size.
+Currently it is selected to be 40x40 size image.This image is estimated by cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size. The state image is normalized by max pixel value i.e. 255 to normalize it to range [0.0,1.0]
+
+2. Normalized Distance to Goal:  
+This value corresponds to euclidean distance of Goal from car normalized by max possible goal distance (diagonal distance of citymap image).
+
+3. Goal Orientation:  
+This value corresponds orientation of Goal wrt to Car's current inclination angle. It is calculated as angular difference between vector1, joining car location and goal location, and vector2, representing Car's pointing direction.
+
+4. -ve Goal Orientation: 
+This value is same as previous value but with -ve sign.
+
+#### Action space:  
+Action space for this environment is 1 dimensional i.e. just one value, 'angle of rotation'. For each of the env.step(action) execution, car is first rotated by given 'action' and then displaced as per its velocity along 'car.angle'.
+
+
+
+
 
