@@ -29,7 +29,7 @@ This file has Environment definition similar to 'endGameEnv.py'. Difference is '
 This file contains code for TD3 training. It combines components in other files to create the main training loop.
 
 7. 'endGameTD3.ipynb'
-This is the Google Colab file for TD3 training. 'endgameTD3.py' is simple .py version of this file. This file can be accessed on Google Colab [here.](https://colab.research.google.com/drive/1ofPhEBYm1s99HXcnZffW4uyVQcD0rTcA?usp=sharing)
+This is the Google Colab file for TD3 training. 'endgameTD3.py' is simple .py version of this file. This file can be accessed on Google Colab [here.](https://colab.research.google.com/drive/1S3kT0hJlK4Uzh10DrAFE55l9OtZAbLyc?usp=sharing)
 
 #### Directories
 1. 'pytorch_models':  
