@@ -1,7 +1,7 @@
 # Project EndGame: Car Navigation using Deep Reinforcement Learning
 
 ## Problem Statement:  
-Simulate Car navigation on city map. Objective is to teach car to reach different goals on the city map while traveling on road using **Twin Delayed DDPG (TD3)** algorithm. 
+Teach car to reach different goals on the city map while traveling on road using **Twin Delayed DDPG (TD3)** algorithm. 
 
 ### Submission:
 
@@ -13,11 +13,11 @@ Click following image to play video.
 To generate above video car needs to first learn to navigate the map then car can make use of the knowledge to navigate roads and hit the targets as shown in the video.
 
 #### How to train your car?
-Just like humans Car needs to go through tons of experiences, learn which actions are rewarding and which are penalizing, experiment, make mistakes, improvise. It's a lot. But its doable using Deep Reinforcement Learning.   
-In this submission we have used one of the most powerful RL algorithm, [**Twin Delayed DDPG**](https://arxiv.org/pdf/1802.09477.pdf) aka **TD3**.
-Detailed explanation on working of this algorithm can be found in previous [session submissions](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S9) and at references listed at the of this page.   
-Coming back to implementation.
-Car's navigation knowledge lies in TD3 algorithm's Actor and Critic models. To train these models there are two options
+Just like humans Car needs to go through tons of experiences, learn which actions are rewarding and which are penalizing, experiment, make mistakes, improvise. It's a lot. But its doable using Deep Reinforcement Learning.
+
+In this submission we have used one of the most powerful RL algorithm, [**Twin Delayed DDPG**](https://arxiv.org/pdf/1802.09477.pdf) aka **TD3**. Detailed explanation on working of this algorithm can be found in previous [session submissions](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S9) and at references listed at the of this page.   
+
+Coming back to implementation, Car's navigation knowledge lies in TD3 algorithm's Actor and Critic models. To train these models there are two options
 
 1. Train on local machine  
 - Download entire EndGame [folder](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/EndGame)
@@ -66,7 +66,7 @@ Now that our Car has learned so much, we must see how it performs. This step mus
 
 #### The Environment
 
-To simulate the car navigation task an environment has been defined. Environment definition is similar to standard Gym environments. Important functions like step(),reset(),render() have been provided for ease of use. This way the training algorithm need not worry about car movement,visualization, reward generations etc. Model has to just query the environment for current state and based on that provide action to the environment. Environment in turn takes provided action and generates next state and also informs actor about reward for that step. 
+To simulate the car navigation task an environment has been defined. Environment definition is similar to standard Gym environments. Important functions like step(),reset(),render() have been provided for ease of use. This way the training algorithm need not worry about car movement,visualization, reward generations etc. Actor has to just query the environment for current state and based on that provide action to the environment. Environment in turn takes provided action and generates next state and also informs Actor about reward for that step. 
 
 Some of the important components and utilities of the Environment are explained below.
 
