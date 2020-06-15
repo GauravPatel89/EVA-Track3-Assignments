@@ -66,7 +66,7 @@ Now that our Car has learned so much, we must see how it performs. This step mus
 
 #### Environment
 
-To simulate the car navigation task an environment has been defined. Environment definition is similar to standard Gym environments. Important functions like step(),reset(),render() have been provided for ease of use. This way the training algorithm need not worry about car movement,visualization, reward generations etc. Model has to just query the environment for current state and based on that provide action to the environment. Environment in turn takes provided action and generates next state and also informs actor about reward for that step.
+To simulate the car navigation task an environment has been defined. Environment definition is similar to standard Gym environments. Important functions like step(),reset(),render() have been provided for ease of use. This way the training algorithm need not worry about car movement,visualization, reward generations etc. Model has to just query the environment for current state and based on that provide action to the environment. Environment in turn takes provided action and generates next state and also informs actor about reward for that step. 
 
 Some of the important components and utilities of the Environment are explained below.
 
@@ -82,23 +82,22 @@ For second task, we must have have information as to how far is the Goal and whe
 Keeping this in mind we have 4 components in our 'State'
 
 1. Current state image:  
-Current state image for the environment is a cropped view of road network in car's front view i.e. how car is viewing the area around it. In this view car is always facing front but area around it changes as car navigates as shown below.  
+Current state image for the environment is a cropped view of road network in car's front view i.e. how car is viewing the area around it. In this view car is always facing front but area around it changes as car navigates as shown below.    
 
-<p align="center">
-  <img width="100" height="100" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/stateImage.gif">
-</p>
-   
-Currently it is selected to be 40x40 size image. This image is estimated by first cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size. On such example is illustrated below. Car angle is assumed to be 10 degrees.
+    <p align="center">
+      <img width="100" height="100" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/stateImage.gif">
+    </p>  
+    
+       
+    Currently it is selected to be 40x40 size image. This image is estimated by first cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size. On such example is illustrated below. Car angle is assumed to be 10 degrees.
 
-<p align="center">
-  <img width="800" height="800" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/StateFig1.bmp">
-</p>
-
-<p align="center">
-  <img width="800" height="220" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/StateFig2.bmp">
-</p>
-
-
+    <p align="center">
+      <img width="800" height="800" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/StateFig1.bmp">
+    </p>
+    
+    <p align="center">
+      <img width="800" height="220" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/StateFig2.bmp">
+    </p> 
 
 
 2. Normalized Distance to Goal:  
@@ -110,10 +109,29 @@ This value corresponds orientation of Goal wrt to Car's current inclination angl
 4. -ve Goal Orientation: 
 This value is same as previous value but with -ve sign.
 
-#### Action space:  
-Action space for this environment is 1 dimensional i.e. just one value, 'angle of rotation'. For each of the env.step(action) execution, car is first rotated by given 'action' and then displaced as per its velocity along 'car.angle'.
+##### Action space:  
+Action space for the environment defines kind of actions environment allows a model to achieve it's goal. For our environment action space is 1 dimensional i.e. just one value, 'angle of rotation'. 
 
+For each of the env.step(action) execution, car is first rotated by given 'action' and then displaced as per its velocity along 'car.angle'.
 
+Max size of this rotation has been limited to 5 degrees thus during any step car can rotate by maximum of -5.0 or 5.0 degrees.
+
+##### An Episode:
+Runs of environment are classified as episodes. In each episode, car tries to reach 3 number of randomly selected goals. Episode is ended based on 3 criteria.
+
+1. All the 3 Goals achieved.
+2. Car is at the boundary and its position has not changed for last 50 steps
+3. Maximum allowed steps (5000) have been taken without encountering previous two conditions.
+
+##### Reward System:
+The reward system plays most important role in conveying to the Actor which actions in particular state are rewarding and which are not. 
+
+For our environment we have following reward system.
+1. On reaching a Goal location: +50.0
+2. On touching walls : -10.0
+3. For being on road and moving towards Goal: 0.5
+4. For being on road but moving away from Goal (Living Penalty): -0.9.
+5. For not being on road: -5.0
 
 
 
