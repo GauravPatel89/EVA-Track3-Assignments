@@ -88,9 +88,19 @@ Current state image for the environment is a cropped view of road network in car
   <img width="100" height="100" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/stateImage.gif">
 </p>
    
-Currently it is selected to be 40x40 size image.This image is estimated by cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size. The state image is normalized by max pixel value i.e. 255 to normalize it to range [0.0,1.0]
+Currently it is selected to be 40x40 size image. This image is estimated by first cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size. On such example is illustrated below. Car angle is assumed to be 10 degrees.
 
-https://colab.research.google.com/drive/1S3kT0hJlK4Uzh10DrAFE55l9OtZAbLyc?usp=sharing
+<p align="center">
+  <img width="800" height="800" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/StateFig1.bmp">
+</p>
+
+<p align="center">
+  <img width="800" height="220" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/StateFig2.bmp">
+</p>
+
+
+
+
 2. Normalized Distance to Goal:  
 This value corresponds to euclidean distance of Goal from car normalized by max possible goal distance (diagonal distance of citymap image).
 
