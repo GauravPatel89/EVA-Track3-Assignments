@@ -191,5 +191,15 @@ This directory contains image files used by the carEndgameEnv environment. It ha
 
 3. 'Figures':  
 This directory contains support files for README.md .
+
+4. 'pytorch_models':
+This directory contains best trained Actor, Critic models used for generating submission video.
+
+    
+### References  
+1. [Fujimoto, S., van Hoof, H., and Meger, D. Addressing function approximation error in actor-critic methods. arXiv preprint arXiv:1802.09477, 2018.](https://arxiv.org/pdf/1802.09477.pdf)
+2. [OpenAI — Spinning Up](https://spinningup.openai.com/en/latest/algorithms/td3.html) 
+3. [Solving-CarRacing-with-DDPG](https://github.com/lzhan144/Solving-CarRacing-with-DDPG/blob/master/TD3.py)
+4. [TD3: Learning To Run With AI](https://towardsdatascience.com/td3-learning-to-run-with-ai-40dfc512f93)
     
 
