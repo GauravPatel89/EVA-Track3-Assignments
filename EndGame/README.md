@@ -10,12 +10,12 @@ Click following image to play video.
 
 ### How to generate above video?
 
-To generate above video car needs to first learn to navigate the map then car can make use of the knowledge to navigate roads and hit the targets as shown in the video.
+To generate output shown in above video, car needs to first learn to navigate the map. Car can then make use of the knowledge to navigate roads and hit the targets as shown in the video.
 
 #### How to train your car?
 Just like humans Car needs to go through tons of experiences, learn which actions are rewarding and which are penalizing, experiment, make mistakes, improvise. It's a lot. But its doable using Deep Reinforcement Learning.
 
-In this submission we have used one of the most powerful RL algorithm, [**Twin Delayed DDPG**](https://arxiv.org/pdf/1802.09477.pdf) aka **TD3**. Detailed explanation on working of this algorithm can be found in previous [session submissions](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S9) and at references listed at the of this page.   
+In this submission we have used one of the most powerful RL algorithm, [**Twin Delayed DDPG**](https://arxiv.org/pdf/1802.09477.pdf) aka **TD3**. Detailed explanation on working of this algorithm can be found in previous [session submissions](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S9) and at references listed at the end of this page.   
 
 Coming back to implementation, Car's navigation knowledge lies in TD3 algorithm's Actor and Critic models. To train these models there are two options
 
@@ -68,7 +68,7 @@ Now that our Car has learned so much, we must see how it performs. This step mus
 
 To simulate the car navigation task an environment has been defined. Environment definition is similar to standard Gym environments. Important functions like step(),reset(),render() have been provided for ease of use. This way the training algorithm need not worry about car movement,visualization, reward generations etc. Actor has to just query the environment for current state and based on that provide action to the environment. Environment in turn takes provided action and generates next state and also informs Actor about reward for that step. 
 
-Some of the important components and utilities of the Environment are explained below.
+Some of the important components of the Environment are explained below.
 
 ##### State space:
 State for the environment should be such that it satisfies markov model, meaning at any point of time the state should be able to represent environment's current setup irrespective of past actions and states. In simple terms we must define 'State' such that it conveys to the model all the information about the Environment in order to take an appropriate action to achieve the specified target.
