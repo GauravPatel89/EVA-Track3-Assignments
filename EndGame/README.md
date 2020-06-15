@@ -5,12 +5,11 @@ Teach car to reach different goals on the city map while traveling on road using
 
 ### Submission:
 
-Click following image to play video.
 [![EndGame Final Submission](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/endGameVideoSnapShot.png)](https://youtu.be/77mfBYC8f0g)
 
 ### How to generate above video?
 
-To generate output shown in above video, car needs to first learn to navigate the map. Car can then make use of the knowledge to navigate roads and hit the targets as shown in the video.
+To generate output shown in above video, car needs to first learn to navigate the map. Car can then make use of this knowledge to navigate roads and hit the targets as shown in the video.
 
 #### How to train your car?
 Just like humans Car needs to go through tons of experiences, learn which actions are rewarding and which are penalizing, experiment, make mistakes, improvise. It's a lot. But its doable using Deep Reinforcement Learning.
