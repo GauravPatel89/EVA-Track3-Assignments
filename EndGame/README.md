@@ -1,6 +1,6 @@
-## Project EndGame: Car Navigation using Deep Reinforcement Learning
+# Project EndGame: Car Navigation using Deep Reinforcement Learning
 
-### Problem Statement:  
+## Problem Statement:  
 Simulate Car navigation on city map. Objective is to teach car to reach different goals on the city map while traveling on road using **Twin Delayed DDPG (TD3)** algorithm. 
 
 ### Submission:
@@ -8,11 +8,11 @@ Simulate Car navigation on city map. Objective is to teach car to reach differen
 Click following image to play video.
 [![EndGame Final Submission](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/endGameVideoSnapShot.png)](https://youtu.be/77mfBYC8f0g)
 
-#### How to generate above video?
+### How to generate above video?
 
-To generate above video car needs to first learn to navigate the map then car can make use of the knowledge to navigate roads and hit the targets as shown the video.
+To generate above video car needs to first learn to navigate the map then car can make use of the knowledge to navigate roads and hit the targets as shown in the video.
 
-##### How to train your car?
+#### How to train your car?
 Just like humans Car needs to go through tons of experiences, learn which actions are rewarding and which are penalizing, experiment, make mistakes, improvise. It's a lot. But its doable using Deep Reinforcement Learning.   
 In this submission we have used one of the most powerful RL algorithm, [**Twin Delayed DDPG**](https://arxiv.org/pdf/1802.09477.pdf) aka **TD3**.
 Detailed explanation on working of this algorithm can be found in previous [session submissions](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S9) and at references listed at the of this page.   
@@ -47,7 +47,7 @@ Google drive link for our training run directory can be found [here.](https://dr
 Best trained models for our run can be found [here.](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/EndGame/pytorch_models)
 
 
-##### How to Run your Car?
+#### How to Run your Car?
 
 Now that our Car has learned so much, we must see how it performs. This step must be run on local machine as follows.
 - cd to 'EndGame' directory   
