@@ -88,7 +88,7 @@ Current state image for the environment is a cropped view of road network in car
     </p>  
     
        
-    Currently it is selected to be 40x40 size image. This image is estimated by first cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size. On such example is illustrated below. Car angle is assumed to be 10 degrees.
+    Currently crop size has been selected to be 40x40 . This image is estimated by first cropping an area twice the required crop size, rotating it by (90-car.angle) then again cropping it to required crop size. One such example is illustrated below. Car angle is assumed to be 10 degrees.
     
     <p align="center">
       <img width="800" height="800" src="https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/EndGame/Figures/StateFig1.bmp">
@@ -100,7 +100,7 @@ Current state image for the environment is a cropped view of road network in car
 
 
 2. Normalized Distance to Goal:  
-This value corresponds to euclidean distance of Goal from car normalized by max possible goal distance (diagonal distance of citymap image).
+This value corresponds to euclidean distance of Goal from car, normalized by max possible goal distance (diagonal distance of citymap image).
 
 3. Goal Orientation:  
 This value corresponds orientation of Goal wrt to Car's current inclination angle. It is calculated as angular difference between vector1, joining car location and goal location, and vector2, representing Car's pointing direction.
@@ -109,7 +109,7 @@ This value corresponds orientation of Goal wrt to Car's current inclination angl
 This value is same as previous value but with -ve sign.
 
 ##### Action space:  
-Action space for the environment defines kind of actions environment allows a model to achieve it's goal. For our environment action space is 1 dimensional i.e. just one value, 'angle of rotation'. 
+Action space for the environment defines kind of actions environment allows an Actor to take. For our environment action space is 1 dimensional i.e. just one value, 'angle of rotation'. 
 
 For each of the env.step(action) execution, car is first rotated by given 'action' and then displaced as per its velocity along 'car.angle'.
 
