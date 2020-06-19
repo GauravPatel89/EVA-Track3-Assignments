@@ -1,4 +1,4 @@
-# EVA-Track3-Phase2-Session7 : Deep-Q-Learning
+# Phase 2 Session 7: Car Navigation Simulation using Deep Q-Learning
 
 ## Assignment
 1. Create a new map of some other city for the code [shared](https://drive.google.com/file/d/1H7iTOsv54AtafxPnL5zs2_0RoQ9J0sow/view?usp=sharing) 
