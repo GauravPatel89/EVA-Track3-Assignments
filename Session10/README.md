@@ -1,13 +1,10 @@
-# EVA-Track3-Session10
-This repository contains assignment files of TSAI-EVA-Track3 course's session10.
+# Session10 : GradCam with VGG16 on ImageNet Dataset
+
 
 ## Assignment
-First Part:
 
-    Refer to the GRADCAM code we wrote (Links to an external site.)
-    Build GradCAM images for the one layer before the one we used, and one layer before this one. Show the results.
-    Load this image  (Links to an external site.)
-    "Find"  "sunglasses" in the image using GradCAM
+1. Refer to the GRADCAM code from previous session. Build GradCAM images for the one layer before the one we used, and one layer before this one. Show the results.  
+2. Load this [image](https://media.karousell.com/media/photos/products/2018/08/20/16_scale_tony_stark_avenger3_headscrupt_with_glasses_1534759826_e79b0cf4.jpg). "Find"  "sunglasses" in the image using GradCAM
 
 
 ## Files
