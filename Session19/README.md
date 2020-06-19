@@ -1,12 +1,8 @@
-# EVA-Track3-Session19
-This repository contains assignment files of TSAI-EVA-Track3 course's session19.
+# Session19 : Generative Adversial Networks
 
 ## Assignment
 
-
-    Train any GAN to create 64x64 images of Guns/Weapons/Rifles.  (Links to an external site.)
-    You have a team of 4 people, divide the project between yourselves including image collection, model selection, etc. 
-
+Train any GAN to create 64x64 images of Guns/Weapons/Rifles.  
 
 ## Group Members
 
