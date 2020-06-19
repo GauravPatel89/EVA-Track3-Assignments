@@ -1,6 +1,8 @@
-
 # The School of AI's Extensive Vision AI - Assignments
 This repository contains assignment files of [The School of AI](https://theschoolof.ai)'s Extensive Vision AI course.
+
+
+
 
 ## Course Contents
 
@@ -15,8 +17,8 @@ This repository contains assignment files of [The School of AI](https://theschoo
 |7.| Receptive Field: Exhaustive Coverage on Receptive Fields, advancements in Receptive Field, and how RF diverges for different kind of problems|[Implement ENAS discovered network for cifar10 dataset](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session7)
 |8.|EOSS|
 |9.| Data Augmentation Techniques: Advanced Image Augmentation Techniques, benchmarks against different techniques and ICC| [Integrate GradCam and cutout with Assignment 6 DNN](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session9)
-|10.| Kernel/Channel Visualization | The most powerful debugging tool at your disposal! (ICC)|[Integrate GradCam with pre-trained VGG16 net on ImageNet Dataset](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session10)
-|11.| Advanced Training Concepts | Advanced concepts on training, including LR, Momentum, Learning Rate Finder,|[Integrate LR finder,cutout and SGD with momentum with given predefined DNN ](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session11)
+|10.| Kernel/Channel Visualization: The most powerful debugging tool at your disposal! (ICC)|[Integrate GradCam with pre-trained VGG16 net on ImageNet Dataset](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session10)
+|11.| Advanced Training Concepts: Advanced concepts on training, including LR, Momentum, Learning Rate Finder|[Integrate LR finder,cutout and SGD with momentum with given predefined DNN ](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session11)
 |12.| SuperConvergence: Advanced topics cover to understand and execute Super Convergence|[DavidNet model training using One Cycle training policy](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session12)
 |13.| ResNet Part 1: Understanding ResNet end to end (ICC)|[Implement ResNet18 for CIFAR10 Dataset to achieve accuracy above 90%](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session13)
 |14.| ResNext Part 2: Understanding ResNet V2, V3 and ResNext (ICC)|[Implement DavidNet for Cifar10 dataset with data being loaded from tfrecords](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/Session14)
@@ -28,8 +30,8 @@ This repository contains assignment files of [The School of AI](https://theschoo
 |**Phase2**
 |1.| Word2Vec & Neural Word Embeddings: Using Word2Vec, ELMO, BERT, GPT-2, Glove & Doc2Vec|[Train the GLOVE based model  for sentiment analysis on ImDB dataset](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S1)
 |2.| RNN : RNN Basics, advances and drawbacks. Visualizing memorizations in RNNs|
-|3.| LSTM & GRU | The intuition behind LSTM and GRUs. ICC|
-|4.| Attention Mechanism & Memory Networks | Attention & augmented RNNs. Why "Attention"? Memory Networks and ICC|
+|3.| LSTM & GRU: The intuition behind LSTM and GRUs. ICC|
+|4.| Attention Mechanism & Memory Networks: Attention & augmented RNNs. Why "Attention"? Memory Networks and ICC|
 |5.| Reinforcement Learning Basics: Background, Intuition, and roadmap|[Design DNN in PyTorch, with less tha 15K parameters and 99.3% accuracy on MNIST Dataset ](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S5)
 |6.| Q-Learning: Basics of Q-Learning,Bellman Equation,Markov Decision Process|[Implement Q-Learning Agent for GridWorld Example](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S6)
 |7.| Deep Q-Learning: Deep Q Learning, Replay Memory, Partially Observable MDPs and ICC|[Car navigation simulation using Deep Q-Learning](https://github.com/GauravPatel89/EVA-Track3-Assignments/tree/master/P2S7)
