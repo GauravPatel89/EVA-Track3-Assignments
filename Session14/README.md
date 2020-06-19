@@ -1,6 +1,15 @@
 # EVA-Track3-Session14
 This repository contains assignment files of TSAI-EVA-Track3 course's session14.
 
+## Assignment
+
+    Run the following code: Colab 93%, 24 Epochs, 858 seconds [LINK](https://colab.research.google.com/drive/16T4C-t148ZRpLz2MiNBZ0eYyGPLNN2Sx)
+    Move the data to TFRecords
+    Add CutOut
+    Submit. 
+    Your submission must have readme.md file which shows your training logs, training graphs (including validation), and final accuracy. It should also mention names of your group members. 
+    HARD DEADLINE, post deadline, assignment will not be evaluated. 
+
 
 ## Group Members
 
