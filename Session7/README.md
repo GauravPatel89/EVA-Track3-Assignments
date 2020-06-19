@@ -15,7 +15,7 @@ The lines you see are the skip-connections. You need to add them.Train for 100 E
 ## Assignment 7B: 
 **Session7B.ipynb**
 -- This is a google colab file containing implementation of ENAS model for CIFAR-10 dataset.
-  The google colab file link is https://colab.research.google.com/drive/1Oo4-D9gF2sDjdXQhh48dMF-iWljQUe1Q
+  The google colab file can be accessed [here](https://colab.research.google.com/drive/1Oo4-D9gF2sDjdXQhh48dMF-iWljQUe1Q)
   
 
 ## Assignment 7A: 
