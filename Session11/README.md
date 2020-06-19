@@ -3,7 +3,7 @@ This repository contains assignment files of TSAI-EVA-Track3 course's session11.
 
 ## Assignment
 
-    Pick this code (Links to an external site.) 
+    Pick this [code](https://github.com/amitdoda1983/EVA-Session-6/blob/master/6A_M6_Amit_Doda.ipynb) 
     Add CutOut to this
     Use LR Finder to find the best starting learning rate
     Use SDG with Momentum
