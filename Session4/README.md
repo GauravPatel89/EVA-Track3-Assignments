@@ -45,11 +45,11 @@
 
 ## Files
 
-**ArchitecturalBasics.md**
-> This file describes important terms and points to consider in design of CNN Architecture and training.
+**ArchitecturalBasics.md**  
+This file describes important terms and points to consider in design of CNN Architecture and training.
 
-**Session4_ArchitecturalBasics.ipynb**
-> This is a google colab file containing codes for MNIST training. Final result achieved is validation accuracy of 99.45% with 9310 parameters. The google colab file can be found [here](https://colab.research.google.com/drive/1qtshfvPd-lcKDYKszfCSBZgBymJLgEpP)
+**Session4_ArchitecturalBasics.ipynb**  
+This is a google colab file containing codes for MNIST training. Final result achieved is validation accuracy of 99.45% with 9310 parameters. The google colab file can be found [here](https://colab.research.google.com/drive/1qtshfvPd-lcKDYKszfCSBZgBymJLgEpP)
 
->  Code follows incremental approach to improve the model performance. This helps in understanding how different techniques and algorithms affect the performance of the CNN model.
+Code follows incremental approach to improve the model performance. This helps in understanding how different techniques and algorithms affect the performance of the CNN model.
  
