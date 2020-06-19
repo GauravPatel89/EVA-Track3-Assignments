@@ -13,6 +13,6 @@
 ## Files
 **Session2.ipynb**
 -- this is a google colab file containing commented file of session2.
-  The file can also be found at https://colab.research.google.com/drive/1L6OHRsdU71gc-MsA-GMWarZ9y6fPe12c
+  The file can also be found [here](https://colab.research.google.com/drive/1L6OHRsdU71gc-MsA-GMWarZ9y6fPe12c)
   
  
