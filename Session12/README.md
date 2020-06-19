@@ -1,18 +1,18 @@
+# Session 12 : Advanced Training Concepts
+
 ## Assignment
 
-    Read this [file](https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1)
-    Explain the code
-    Submit your readme.md explaination on github. 
+Read this [file](https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1). Explain the code. Submit your readme.md explaination on github. 
 
 
-# DavidNet model training using One Cycle training policy
+## DavidNet model training using One Cycle training policy
 
 Cifar10 is a classic dataset in the field of deep learning. It has 60000 colour images of size 32×32 images belonging to 10 different classes (6000 images/class). Training Cifar10 to accuracy of 94% is quite challenging and doing it in few 100 seconds and in cost effective way is even more challenging. DAWNBench competition (https://dawn.cs.stanford.edu/benchmark/index.html#cifar10) targets this particular aspect. One of the winner model(Nov 2018 - Apr 2019) on DAWNBench, is by David C. Page. It is a custom built 9-Layer ResNet model. It takes just 1 min 15 sec to achieve 94.08% accuracy. Following is an implementation of model used by David C. Page and trained using One cycle training policy.
 
 Complete code can be found at https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1
 Code segments are described below.
  
-## 1.Import necessary modules
+### 1.Import necessary modules
 
 
      import numpy as np
@@ -22,13 +22,13 @@ Code segments are described below.
      import tensorflow.contrib.eager as tfe
     
     
-## 2.Enable tensorflow eagermode.
+### 2.Enable tensorflow eagermode.
 
 In tensorflow everything is computational graph so if we wanted to debug or check small part of our code, it will not be possible unless entire graph has been defined and we run entire graph. This can be cumbersome process. Enabling tensorflow eagermode allows us to evaluate code segments immediately without building graphs. For more information refer https://www.tensorflow.org/guide/eager
 
     tf.enable_eager_execution()
     
-## 3.Use Forms to parameterize the code. 
+### 3.Use Forms to parameterize the code. 
 
 Using this we can allow user input for adjusting parameters in our code. We parameterize Batch size, momentum, learning rate, weight decay and number of epochs.
 
@@ -38,7 +38,7 @@ Using this we can allow user input for adjusting parameters in our code. We para
     WEIGHT_DECAY = 5e-4 #@param {type:"number"}
     EPOCHS = 24 #@param {type:"integer"}
     
-## 4.Define a function to initialize layer weights. 
+### 4.Define a function to initialize layer weights. 
 
 This function has been defined here because DavidNet model uses PyTorch but the way PyTorch intializes model layer weights has no equivalent in tensorflow.
 
@@ -47,7 +47,7 @@ This function has been defined here because DavidNet model uses PyTorch but the 
          bound = 1 / math.sqrt(fan)
          return tf.random.uniform(shape, minval=-bound, maxval=bound, dtype=dtype)
          
-## 5.Define a class for basic Convolution block.
+### 5.Define a class for basic Convolution block.
 
 In this class Conv2D layer followed BatchNormalization,DropOut and ReLU activation.  This class has been inherited from "tf.keras.Model" class thus it inherits training and inference functionalities. Instances of this class can be used as parts or building blocks of our DNN model. 
 
@@ -66,7 +66,7 @@ kernels are initialized using previously defined _init_pytorch()_ function.
       def call(self, inputs):
         return tf.nn.relu(self.bn(self.drop(self.conv(inputs))))
         
-## 6.Define a class for custom ResNET block. 
+### 6.Define a class for custom ResNET block. 
 
 Just like __ConvBN__  various components of ResNet, like basic Conv block, pooling layer and residual connection are defined in __\_\_init\_\_()__ and how these layers are connected together is defined in __call()__. Output of Basic ConvBN block is passed to pooling layer and if residual connection is required connection consisting of two ConvBN blocks is added. 
 
@@ -88,7 +88,7 @@ Number of kernels are passed as parameter _c_out_. Pooling layer to be used is p
           h = h + self.res2(self.res1(h))
         return h
 
-## 7.Define Entire model.
+### 7.Define Entire model.
 
 Again the same procedure is followed. We define a DavidNet class. Various layers are defined in __\_\_init\_\_()__ and their connection chain is defined in __call()__ . Complete model is shown in the image below.
 
@@ -142,7 +142,7 @@ In this step _tf.argmax()_ gets actual class id from one-hot encoded _h_ vector.
 
 
 
-## 8. Data preprocessing.
+### 8. Data preprocessing.
 
 Now with our model ready we can proceed to prepare our data. First we load the standard cifar10 dataset and reshape it. Next we have to do padding by 4. This is done as follow
 
@@ -166,7 +166,7 @@ After padding normalize the data by subtracting mean and dividing by standard de
     x_train = normalize(pad4(x_train))
     x_test = normalize(x_test)
     
-## 9. Set up Learning rate scheduler, Momentum optimizer and data augmentation
+### 9. Set up Learning rate scheduler, Momentum optimizer and data augmentation
 
 Next steps to be done are setting up Learning rate scheduler,Momentum optimizer and data augmentation. 
 
@@ -204,7 +204,7 @@ We have already padded (with 4 elements) and normalized our data. We now randoml
     opt = tf.train.MomentumOptimizer(lr_func, momentum=MOMENTUM, use_nesterov=True)
     data_aug = lambda x, y: (tf.image.random_flip_left_right(tf.random_crop(x, [32, 32, 3])), y)
 
-## 9.Model Training
+### 9.Model Training
 
 Now we are all set to train our model. Some important steps are as follows.
 
@@ -334,8 +334,8 @@ Entire code segment is given below
       'val loss:', test_loss / len_test, 'val acc:', test_acc / len_test, 'time:', time.time() - t)
 
 
-## Complete code
+### Complete code
 
 
-Complete code can be found at https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1 code
+Complete code can be found [here](https://colab.research.google.com/drive/1FL6G-b9PsD5wzITORZnSyjbwLdEG6dK0#scrollTo=172sWTxXxgJ1).
 
