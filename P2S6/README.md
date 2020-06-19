@@ -1,5 +1,5 @@
 
-# EVA-Track3-Phase2-Session6
+# Phase 2 Session 6: Q-Learning for GridWorld Environment
 This repository contains assignment files of TSAI-EVA-Track3 course's Phase2 session6.
 
 ## Assignment
