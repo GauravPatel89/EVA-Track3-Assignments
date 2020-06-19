@@ -1,14 +1,8 @@
-# Implementing Twin Delayed Deep Deterministic Policy Gradient (TD3) Algorithm
+# Phase 2 Session 9: Assignment Implementing Twin Delayed Deep Deterministic Policy Gradient (TD3) Algorithm
 
-## **Phase 2 Session 9: Assignment**
----
-1. Well, there is a reason why this code is in the image, and not pasted.
-2. You need to:
-    1. write this code down on a Colab file, upload it to GitHub.
-    2. write a Readme file explaining all the 15 steps we have taken:
-        1. read me must explain each part of the code
-        2. each part of the code must be accompanied with a drawing/image (you cannot use the images from the course content)
-    3. Upload the link.
+## Assignment
+1. write TD3 code shared in the session on a Colab file, upload it to GitHub.
+2. write a Readme file explaining all the 15 steps we have taken. It must explain each part of the code accompanied by a drawing/image.
 
 ---
 ## **Twin Delayed DDPG (TD3)**
