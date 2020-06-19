@@ -1,4 +1,4 @@
-# Phase 2 Session 9: Assignment Implementing Twin Delayed Deep Deterministic Policy Gradient (TD3) Algorithm
+# Phase 2 Session 9: Implementing Twin Delayed Deep Deterministic Policy Gradient (TD3) Algorithm
 
 ## Assignment
 1. write TD3 code shared in the session on a Colab file, upload it to GitHub.
