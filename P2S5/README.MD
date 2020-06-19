@@ -1,5 +1,4 @@
-# EVA-Track3-Phase2-Session5
-This repository contains assignment files of TSAI-EVA-Track3 course's Phase2 session5.
+# Phase 2 Session 5: PyTorch CNN for MNIST Dataset
 
 ## Assignment
 Design and train a CNN model on MNIST dataset so as to satisfy following conditions
