@@ -1,4 +1,4 @@
-# EVA-Track3-Phase2-Session7 : A3C Algorithm
+# Phase 2 Session 8: A3C Algorithm
 
 ## Assignment
 
