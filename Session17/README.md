@@ -1,11 +1,8 @@
-# EVA-Track3-Session17
-This repository contains assignment files of TSAI-EVA-Track3 course's session17.
+# Session17 : Mask R-CNN
+
 
 ## Assignment
-
-    run [this] (https://github.com/Tony607/colab-mask-rcnn/blob/master/Colab_Mask_R_CNN_Demo.ipynb) on your own video, 
-    upload the video on YouTube, 
-    share the link
+Run [this](https://github.com/Tony607/colab-mask-rcnn/blob/master/Colab_Mask_R_CNN_Demo.ipynb) on your own video. Upload the video on YouTube. Share the link
 
 
 ## Group Members
