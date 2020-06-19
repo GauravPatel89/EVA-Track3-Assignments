@@ -1,6 +1,14 @@
 # EVA-Track3-Session10
 This repository contains assignment files of TSAI-EVA-Track3 course's session10.
 
+## Assignment
+First Part:
+
+    Refer to the GRADCAM code we wrote (Links to an external site.)
+    Build GradCAM images for the one layer before the one we used, and one layer before this one. Show the results.
+    Load this image  (Links to an external site.)
+    "Find"  "sunglasses" in the image using GradCAM
+
 
 ## Files
 
