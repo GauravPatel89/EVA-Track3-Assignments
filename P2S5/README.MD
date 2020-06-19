@@ -1,7 +1,7 @@
 # EVA-Track3-Phase2-Session5
 This repository contains assignment files of TSAI-EVA-Track3 course's Phase2 session1.
 
-## Problem Statement
+## Assignment
 Design and train a CNN model on MNIST dataset so as to satisfy following conditions
 
    1) Model has less than 15k params
