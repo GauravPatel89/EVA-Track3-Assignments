@@ -1,12 +1,14 @@
 
+# EVA-Track3-Phase2-Session6
+This repository contains assignment files of TSAI-EVA-Track3 course's Phase2 session6.
 
-    Share a screenshot of you running the whole code on your computer. To make sure it is your computer, put your own photo as the wallpaper (important)
-    You would need to find code for some files to run it successfully. You're of course going to find the files online and paste the code. 
-    Once you are done, understand the code you copied and write a pseudo-code to explain what is happening. You need to explain:
-        __init__
-        getQValue
-        computeValueFromQValue
-        computeActionFromQValues
-        getAction
-        update
-    Write your pseudo-code in your P2S6 Assignment Submission page. Example question you'll find "Write a the pseudo-code (if you paste direct code, will be awarded 0) for __init__"
+## Assignment
+
+1. Implement Q-Learning algorithm for GridWorld defined [here](http://ai.berkeley.edu/home.html)
+2. Write a pseudo-code to explaining following functions   
+    - \_\_init\_\_  
+    - getQValue
+    - computeValueFromQValue
+    - computeActionFromQValues
+    - getAction
+    - update
