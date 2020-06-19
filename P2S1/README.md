@@ -1,5 +1,4 @@
-# EVA-Track3-Phase2-Session1
-This repository contains assignment files of TSAI-EVA-Track3 course's Phase2 session1.
+# Phase 2 Session 1: Sentiment Analysis with IMDB Dataset
 
 ## Assignment
 1. Refer to the code mentioned on pages: 182-195 of this [BOOK](http://faculty.neu.edu.cn/yury/AAI/Textbook/Deep%20Learning%20with%20Python.pdf)
