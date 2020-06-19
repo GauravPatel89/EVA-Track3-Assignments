@@ -1,6 +1,23 @@
 # EVA-Track3-Session15
 This repository contains assignment files of TSAI-EVA-Track3 course's session15.
 
+## Assignment
+
+Work on the your own library now:
+
+    Convert your code such that you have 4 additional files in 4 folders:
+        data
+        loss
+        model
+        optim_scheduler
+    Use these files to import related functions to train your model. Your ipynb files can only have training loop, and everything else must be imported. Look at this COMPLEX reference: https://github.com/rwightman/pytorch-image-models/tree/master/timm (Links to an external site.)
+
+Submission:
+
+    Github Link
+    ReadMe must have link to the blog. 
+    You are profiling your own code
+
 
 ## Group Members
 
