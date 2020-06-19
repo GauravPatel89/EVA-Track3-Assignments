@@ -1,6 +1,21 @@
 # EVA-Track3-Session7
 This repository contains assignment files of TSAI-EVA-Track3 course's session7.
 
+## Assignment
+Assignment:
+
+    Check this paper out: https://arxiv.org/pdf/1409.4842.pdf (Links to an external site.)
+        They mention on page 6, that the RF is 224x224. 
+        Use the formulas above and show the calculations
+        Submit this in the readme file
+        THIS PART OF THE ASSIGNMENT WILL NOT BE SCORED
+    Design this network (CIFAR10):
+    [Image](https://github.com/GauravPatel89/EVA-Track3-Assignments/blob/master/Session7/enasdiscoverednetwork.png)
+        Image result for eNAS network architecture
+        The lines you see are the skip-connections. You need to add them
+        Train for 100 Epochs (add BN and ReLU after every layer)
+        Submit the results
+        Total assignment score is 600, 500 for the network, and 100 for the documentation
 
 ## Assignment 7B: 
 **Session7B.ipynb**
