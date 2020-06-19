@@ -1,6 +1,28 @@
 # EVA-Track3-Session16
 This repository contains assignment files of TSAI-EVA-Track3 course's session16.
 
+## Assignment
+
+    Refer to this TSAI COLAB [FILE] (https://colab.research.google.com/drive/1iZdzI0VEG8ieRgHXKT7tNEE7iN3gw4tN)
+    We have stitched multiple projects into 1, so you can train tiny-YOLO on COLAB!
+    Refer to this blog: LINK (Links to an external site.) and LINK (Links to an external site.). This is the main source for our project. 
+    Refer to the "main.py" in Step 1. 
+    Here is what you need to do:
+        create your own dataset using main.py
+        collect 200 images (more the better) for any 1 class of your choice. e.g. this project is for the helmet. You cannot use the same dataset as in this project. 
+        you should be able to find a short youtube video for this class as well (example classes you can pick: traffic_light, dog, car, bird, flag, etc)
+        annotate 200 images as explained in the links above
+        replace the data_for_colab folder with your custom folder
+        train YOLO for 1000 epochs (more the better)
+        download 1 youtube video  which has your class, you can use this: https://www.y2mate.com/en4 (Links to an external site.)
+        run this command
+
+            !./darknet detector demo data_for_colab/obj.data data_for_colab/yolov3-tiny-obj.cfg backup/yolov3-tiny-obj_1000.weights  -dont_show youtube_video.mp4 -i 0 -out_filename veout.avi
+
+        upload your video on YouTube.
+        Share the link with us (and your LinkedIn as well if you want!)!
+        Fixed deadline and try to do this in a group (at least share your datasets). 
+
 
 ## Group Members
 
