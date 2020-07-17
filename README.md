@@ -1,7 +1,7 @@
 # The School of AI's Extensive Vision AI - Assignments
 This repository contains assignment files of [The School of AI](https://theschoolof.ai)'s Extensive Vision AI course.
 
-
+Website: [https://gauravpatel89.github.io/EVA-Track3-Assignments/](https://gauravpatel89.github.io/EVA-Track3-Assignments/)
 
 
 ## Course Contents
